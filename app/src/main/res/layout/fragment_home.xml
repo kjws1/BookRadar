@@ -24,6 +24,7 @@
             android:layout_marginTop="10dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="15dp"
+            android:paddingHorizontal="10dp"
             android:background="@drawable/shape_line"
             android:orientation="horizontal"
             app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
@@ -31,21 +32,21 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <ImageView
-                android:id="@+id/searchImage"
-                android:layout_width="22dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:src="@drawable/search_icon" />
-
             <EditText
                 android:id="@+id/editSearch"
-                android:layout_width="305dp"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:ems="10"
                 android:hint="도서관 검색"
                 android:inputType="text" />
+
+            <ImageView
+                android:id="@+id/searchImage"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0"
+                android:src="@drawable/search_icon" />
 
         </LinearLayout>
 
@@ -95,7 +96,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="35dp"
+                    android:layout_height="48dp"
                     android:orientation="horizontal">
 
                     <CheckBox
