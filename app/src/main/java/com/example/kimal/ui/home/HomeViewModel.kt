@@ -1,4 +1,4 @@
-package com.example.bookradar.ui.home
+package com.example.kimal.ui.home
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

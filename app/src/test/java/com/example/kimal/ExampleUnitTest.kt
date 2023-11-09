@@ -1,4 +1,4 @@
-package com.example.bookradar
+package com.example.kimal
 
 import org.junit.Test
 

@@ -13,6 +13,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "BookRadar"
+rootProject.name = "kimal"
 include(":app")
  

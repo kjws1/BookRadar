@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.bookradar"
+    namespace = "com.example.kimal"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.bookradar"
+        applicationId = "com.example.kimal"
         minSdk = 24
         targetSdk = 33
         versionCode = 1
