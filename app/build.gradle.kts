@@ -53,8 +53,16 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
     implementation("androidx.navigation:navigation-fragment-ktx:2.7.5")
     implementation("androidx.navigation:navigation-ui-ktx:2.7.5")
+    implementation("com.google.code.gson:gson:2.9.0")
     implementation("it.skrape:skrapeit:1.2.2")
-    implementation("com.google.code.gson:gson:2.8.9")
+    implementation("org.danilopianini:khttp:1.4.1")
+    implementation ("org.jsoup:jsoup:1.14.3")
+    implementation ("javax.xml.bind:jaxb-api:2.3.1")
+    implementation ("com.squareup.okhttp3:okhttp:4.9.1")
+    implementation("androidx.legacy:legacy-support-v4:1.0.0")
+    implementation("androidx.recyclerview:recyclerview:1.3.2")
+
+
 
 
     testImplementation("junit:junit:4.13.2")
