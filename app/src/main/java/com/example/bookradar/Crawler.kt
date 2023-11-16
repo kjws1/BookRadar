@@ -1,18 +1,10 @@
 package com.example.bookradar
 
-class Crawler {
-    init {
+class Crawler  {
+
+    val libraries = listOf<Library>(DongyangLibrary())
+    suspend fun search(keyword:String):MutableList<BookInfo> {
+        return libraries[0].search(keyword)
     }
-
-    companion object {
-        val libraries = listOf<Library>(DongyangLibrary())
-
-
-    }
-
-}
-
-fun main() {
-    println(Crawler.libraries[0].search("파이썬"))
 
 }

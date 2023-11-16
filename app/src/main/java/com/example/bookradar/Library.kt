@@ -1,6 +1,8 @@
 package com.example.bookradar
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import it.skrape.core.htmlDocument
@@ -11,6 +13,7 @@ import org.jsoup.Jsoup
 import org.jsoup.parser.Parser
 import java.io.File
 import java.io.IOException
+import java.net.URL
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
@@ -20,7 +23,7 @@ abstract class Library {
     abstract val books: MutableList<BookInfo>
     abstract val filename: String
 
-    abstract fun search(title: String): MutableList<BookInfo>
+    abstract suspend fun search(title: String): MutableList<BookInfo>
 
     protected fun saveBooksToJson(context: Context) {
         if (!filename.endsWith("json")) {
@@ -57,6 +60,7 @@ abstract class Library {
 data class BookInfo(
     var book: Book? = null,
     var urlImage: String? = null,
+    var image: Bitmap? = null,
     var availability: Boolean = false,
     var loc: String = "",
     var id: String = ""
@@ -73,7 +77,7 @@ class DongyangLibrary : Library() {
     override val books = mutableListOf<BookInfo>()
     override val filename: String = "book_dongyang.json"
 
-    override fun search(title: String): MutableList<BookInfo> {
+    override suspend fun search(title: String): MutableList<BookInfo> {
         val encodedTitle = URLEncoder.encode(title, StandardCharsets.UTF_8.toString())
         val book = Book()
         val bInfo = BookInfo()
@@ -92,6 +96,15 @@ class DongyangLibrary : Library() {
             }
         }
         for (el in bElements) {
+            bInfo.urlImage = el.findFirst("img").eachSrc[0]
+            val urlToImage: String? = bInfo.urlImage?.let { url ->
+                if(url.contains("http")) {
+                    url
+                } else {
+                    baseUrl + url
+                }
+            }
+            bInfo.image = urlToImage?.let { getBitmapFromUrl(it) }
             book.title = el.findFirst("dd.title > a").text
             book.author = el.findFirst("dd:nth-child(10)").text
             book.publisher = el.findFirst("dd:nth-child(12)").text
@@ -100,6 +113,7 @@ class DongyangLibrary : Library() {
             bInfo.id = el.findFirst("a").eachHref[0].split("?")[0].split("/").last()
             book.isbn = getIsbn(bInfo.id)
             bInfo.book = book.copy()
+            bInfo.availability = el.findFirst(".availableBtn").classNames.contains("enabled")
             books.add(bInfo.copy())
             println(bInfo)
         }
@@ -112,10 +126,23 @@ class DongyangLibrary : Library() {
         val doc = Jsoup.connect(url).get().parser(Parser.xmlParser())
         return doc.selectXpath("//profile[name='ISBN']/value").text().split("<br/>").dropLast(1)
     }
+    private fun getBitmapFromUrl(src: String): Bitmap? {
+        try {
+            val url = URL(src)
+                val connection = url.openConnection()
+                connection.doInput = true
+                connection.connect()
+                val input = connection.getInputStream()
+                return BitmapFactory.decodeStream(input)
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        return null
+    }
 }
 
 
-fun main() {
+suspend fun main() {
     val lib = DongyangLibrary()
     lib.search("파이썬")
 }
