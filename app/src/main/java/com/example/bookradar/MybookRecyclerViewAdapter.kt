@@ -42,10 +42,11 @@ class MyBookRecyclerViewAdapter(
     override fun getItemCount(): Int = values.size
 
     inner class ViewHolder(binding: FragmentItemBinding) : RecyclerView.ViewHolder(binding.root) {
-        val titleView = binding.textViewTitle
-        val authorView = binding.textViewAuthor
-        val publisherView = binding.textViewPublisher
-        val availabilityView = binding.textViewAvailability
+        val titleView = binding.textTitle
+        val authorView = binding.textAuthor
+        val publisherView = binding.textPublisher
+        val availabilityView = binding.textAvailability
+        val isbnView = binding.textISBN
         val coverImage = binding.imageBookCover
     }
 

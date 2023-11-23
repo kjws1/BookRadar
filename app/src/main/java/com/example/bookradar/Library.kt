@@ -9,6 +9,8 @@ import it.skrape.core.htmlDocument
 import it.skrape.fetcher.BrowserFetcher
 import it.skrape.fetcher.response
 import it.skrape.fetcher.skrape
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
 import org.jsoup.parser.Parser
 import java.io.File
@@ -78,7 +80,9 @@ class DongyangLibrary : Library() {
     override val filename: String = "book_dongyang.json"
 
     override suspend fun search(title: String): MutableList<BookInfo> {
-        val encodedTitle = URLEncoder.encode(title, StandardCharsets.UTF_8.toString())
+        val encodedTitle = withContext(Dispatchers.IO) {
+            URLEncoder.encode(title, StandardCharsets.UTF_8.toString())
+        }
         val book = Book()
         val bInfo = BookInfo()
         val books = mutableListOf<BookInfo>()
