@@ -16,4 +16,10 @@
     <string name="filter_genre_science">Science</string>
     <string name="image_book_cover_desc">Book cover image</string>
     <string name="hint_search_bar">Book title</string>
+    <string name="language_title">Language</string>
+    <string name="misc_header">Misc</string>
+    <string-array name="language_entries">
+        <item>English</item>
+        <item>Korean</item>
+    </string-array>
 </resources>

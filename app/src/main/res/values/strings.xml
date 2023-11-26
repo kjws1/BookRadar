@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:locale="en">
     <string name="app_name">bookradar</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -12,11 +12,18 @@
     <string name="menu_settings">Settings</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
-    <string name="error_empty_search_field" >Please Enter the Book Title</string>
+    <string name="error_empty_search_field">Please Enter the Book Title</string>
     <string name="search_book_content_description">Book title search bar</string>
     <string name="filter_genre_art">Art</string>
     <string name="filter_genre_society">Society</string>
     <string name="filter_genre_science">Science</string>
     <string name="image_book_cover_desc">Book cover image</string>
     <string name="hint_search_bar">Book title</string>
+    <string name="misc_header">Misc</string>
+    <string name="language_title">Language</string>
+    <!-- Preference Titles -->
+    <string-array name="language_entries">
+        <item>English</item>
+        <item>한국어</item>
+    </string-array>
 </resources>

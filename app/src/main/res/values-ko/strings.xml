@@ -16,4 +16,10 @@
     <string name="filter_genre_science">과학</string>
     <string name="image_book_cover_desc">책표지 사진</string>
     <string name="hint_search_bar">책 제목</string>
+    <string name="language_title">언어</string>
+    <string name="misc_header">기타</string>
+    <string-array name="language_entries">
+        <item>영어</item>
+        <item>한국어</item>
+    </string-array>
 </resources>
