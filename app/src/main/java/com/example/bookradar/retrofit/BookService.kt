@@ -1,6 +1,6 @@
 package com.example.bookradar.retrofit
 
-import com.example.bookradar.retrofit.model.BookListModel
+import com.example.bookradar.model.BookListModel
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Query

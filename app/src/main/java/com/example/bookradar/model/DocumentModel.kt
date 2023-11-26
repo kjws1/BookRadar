@@ -1,4 +1,4 @@
-package com.example.bookradar.retrofit.model
+package com.example.bookradar.model
 
 data class DocumentModel(
     val title: String,

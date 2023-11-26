@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_empty_search_field" >책 제목을 입력해주세요</string>
+    <string name="nav_header_title">" 정보"</string>
+    <string name="nav_header_desc">네비게이션 헤더</string>
+    <string name="action_settings">설정</string>
+    <string name="menu_home">홈</string>
+    <string name="menu_borrow">빌린 책 정보</string>
+    <string name="menu_settings">설정</string>
+    <string name="app_name">북레이더</string>
+    <string name="navigation_drawer_open">탐색창 열기</string>
+    <string name="navigation_drawer_close">탐색창 닫기</string>
+    <string name="search_book_content_description">도서명 검색바</string>
+    <string name="filter_genre_art">예술</string>
+    <string name="filter_genre_society">사회</string>
+    <string name="filter_genre_science">과학</string>
+    <string name="image_book_cover_desc">책표지 사진</string>
+    <string name="hint_search_bar">책 제목</string>
+</resources>

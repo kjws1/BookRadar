@@ -7,13 +7,16 @@ android {
     namespace = "com.example.bookradar"
     compileSdk = 34
 
+    androidResources{
+        generateLocaleConfig = true
+    }
+
     defaultConfig {
         applicationId = "com.example.bookradar"
         minSdk = 24
         targetSdk = 33
         versionCode = 1
         versionName = "1.0"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
