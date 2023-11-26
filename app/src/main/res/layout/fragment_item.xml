@@ -13,12 +13,11 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
 
-
             android:layout_marginHorizontal="20dp"
             android:layout_weight="1"
             android:contentDescription="@string/image_book_cover_desc"
 
-            android:src="@android:drawable/ic_menu_report_image" />
+           />
 
         <LinearLayout
             android:layout_width="280dp"
