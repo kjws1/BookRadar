@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.home.HomeFragment">
+    tools:context=".HomeFragment">
 
 
     <LinearLayout
@@ -26,33 +26,31 @@
             android:layout_marginBottom="15dp"
             android:background="@drawable/shape_line"
             android:orientation="horizontal"
+            android:paddingHorizontal="10dp"
             app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <ImageView
-                android:id="@+id/searchImage"
-                android:layout_width="22dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:src="@drawable/search_icon" />
+            <SearchView
+                android:id="@+id/searchBook"
 
-            <EditText
-                android:id="@+id/editSearch"
-                android:layout_width="305dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:ems="10"
-                android:hint="도서관 검색"
-                android:inputType="text" />
+                android:contentDescription="@string/search_book_content_description"
+                android:focusable="true"
+                android:iconifiedByDefault="false"
+                android:importantForAccessibility="yes"
+                android:inputType="text"
+                android:queryHint="@string/hint_search_bar" />
+
 
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/linearLayout2"
             android:layout_width="wrap_content"
-            android:layout_height="438dp"
+            android:layout_height="659dp"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="200dp"
@@ -64,38 +62,12 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="57dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/textWeekly"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@drawable/shape_line2"
-                    android:gravity="center"
-                    android:text="주간"
-                    android:textSize="25sp" />
-
-                <TextView
-                    android:id="@+id/textMonthly"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@drawable/shape_line2"
-                    android:gravity="center"
-                    android:text="월간"
-                    android:textSize="25sp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="35dp"
+                    android:layout_height="48dp"
                     android:orientation="horizontal">
 
                     <CheckBox
@@ -103,21 +75,21 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="예술" />
+                        android:text="@string/filter_genre_art" />
 
                     <CheckBox
                         android:id="@+id/checkBox2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="사회" />
+                        android:text="@string/filter_genre_society" />
 
                     <CheckBox
                         android:id="@+id/checkBox3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="과학" />
+                        android:text="@string/filter_genre_science" />
                 </LinearLayout>
 
                 <View
@@ -127,7 +99,18 @@
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="3dp"
                     android:background="#717070" />
+
             </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/listBook"
+                android:name="com.example.bookradar.HomeFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layoutManager="LinearLayoutManager"
+                tools:context="HomeFragment"
+                tools:listitem="@layout/fragment_item" />
+
         </LinearLayout>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

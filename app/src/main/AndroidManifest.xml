@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:allowBackup="true"
@@ -12,6 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.bookradar"
         tools:targetApi="31">
+        <meta-data android:name="kakao_api" android:value="323b975e45a8758e609fd7d27da046e3"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -24,5 +26,4 @@
             </intent-filter>
         </activity>
     </application>
-
 </manifest>
