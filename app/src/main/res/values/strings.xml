@@ -12,7 +12,7 @@
     <string name="menu_settings">Settings</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
-    <string name="error_empty_search_field" >Please Enter the Book Title</string>
+    <string name="error_empty_search_field">Please Enter the Book Title</string>
     <string name="search_book_content_description">Book title search bar</string>
     <string name="filter_genre_art">Art</string>
     <string name="filter_genre_society">Society</string>

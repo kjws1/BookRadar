@@ -12,14 +12,12 @@
         tools:layout="@layout/fragment_home"  />
 
     <fragment
-        android:id="@+id/nav_borrow"
-        android:name="com.example.bookradar.ui.gallery.GalleryFragment"
-        android:label="@string/menu_borrow"
-        tools:layout="@layout/fragment_gallery" />
-
-    <fragment
         android:id="@+id/nav_settings"
         android:name="com.example.bookradar.ui.slideshow.SlideshowFragment"
         android:label="@string/menu_settings"
         tools:layout="@layout/fragment_slideshow" />
+    <fragment
+        android:id="@+id/nav_borrow"
+        android:name="com.example.bookradar.BorrowFragment"
+        android:label="BorrowFragment" />
 </navigation>
