@@ -7,7 +7,6 @@ import android.content.Context
 import android.content.DialogInterface
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
@@ -187,13 +186,37 @@ class BorrowFragment : Fragment() {
         (adapter as MemoAdapter).line = sPreference.getBoolean("line", true)
 
         binding.fab.setOnClickListener{
-            addMemo()
+            showManualEntry()
         }
 
         return binding.root
     }
 
-    fun addMemo() {
+
+    fun addMemo(title:String, library:String, borrow:String, due: String ) {
+        val db = dbHelper?.writableDatabase
+
+        val item = mutableMapOf<String,String>()
+        itemID++
+        item.put("id", itemID.toString())
+        item.put("title", title)
+        item.put("library", library)
+        item.put("borrow", borrow)
+        item.put("due", due)
+        (binding.list.adapter as MemoAdapter).datas.add(item)
+
+        val value = ContentValues()
+        value.put("id", itemID)
+        value.put("title", title)
+        value.put("library", library)
+        value.put("borrow", borrow)
+        value.put("due", due)
+        db?.insert(DBContract.TABLE_NAME, null, value)
+
+        (binding.list.adapter as MemoAdapter).notifyDataSetChanged()
+
+    }
+    fun showManualEntry() {
         val dBinding = EditLayoutBinding.inflate(layoutInflater)
         val builder = AlertDialog.Builder(activity)
         dBinding.buttonCalendar.setOnClickListener {
@@ -226,30 +249,11 @@ class BorrowFragment : Fragment() {
         builder.setView(dBinding.root)
         builder.setPositiveButton("Ok", object:DialogInterface.OnClickListener {
             override fun onClick(p0: DialogInterface?, p1: Int) {
-                val db = dbHelper?.writableDatabase
                 val title = dBinding.editTextTitle.text.toString()
                 val library = dBinding.editTextLib.text.toString()
                 val borrow = dBinding.editText.text.toString()
                 val due = dBinding.editText2.text.toString()
-
-                val item = mutableMapOf<String,String>()
-                itemID++
-                item.put("id", itemID.toString())
-                item.put("title", title)
-                item.put("library", library)
-                item.put("borrow", borrow)
-                item.put("due", due)
-                (binding.list.adapter as MemoAdapter).datas.add(item)
-
-                val value = ContentValues()
-                value.put("id", itemID)
-                value.put("title", title)
-                value.put("library", library)
-                value.put("borrow", borrow)
-                value.put("due", due)
-                db?.insert(DBContract.TABLE_NAME, null, value)
-
-                (binding.list.adapter as MemoAdapter).notifyDataSetChanged()
+                addMemo(title, library, borrow, due)
             }
         })
         builder.setNegativeButton("Cancel", null)
