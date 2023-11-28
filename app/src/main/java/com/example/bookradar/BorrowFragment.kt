@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper
 import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.bookradar.databinding.EditLayoutBinding
 import com.example.bookradar.databinding.FragmentBorrowBinding
 import com.example.bookradar.databinding.MemoBinding
+import java.text.SimpleDateFormat
 import java.util.Calendar
 
 /**
@@ -93,24 +95,14 @@ class MemoAdapter(val fragment:BorrowFragment, val datas:MutableList<MutableMap<
         (holder as MemoViewHolder).itemPos = position
         holder.itemId = datas[position].get("id")!!.toInt()
         val binding = holder.binding
+        val funcDuration = BorrowFragment()
         with(binding) {
-            /*if(line)
-                memo.setBackgroundResource(R.drawable.shape_line)
-            else
-                memo.setBackgroundResource(R.drawable.shape_noline)
-            if(divide)
-                //divider.visibility = View.VISIBLE
-            else
-                //divider.visibility = View.INVISIBLE
-            textMemo.setBackgroundColor(when(backColor) {
-                3 -> Color.rgb(0xE2, 0xF4, 0xFC)
-                2 -> Color.rgb(0xEB, 0xE3, 0xFB)
-                else -> Color.rgb(0xFE, 0xFB, 0xE5)
-            })*/
-            textTitle.text = datas[position].get("title")
-            textLibrary.text = datas[position].get("library")
+            textTitle.text = "제목: " + datas[position].get("title")
+            textLibrary.text = "도서관: " + datas[position].get("library")
             textBorrow.text = datas[position].get("borrow")
             textDue.text = datas[position].get("due")
+
+            textDuration.text = "기간: " + funcDuration.calDuration(datas[position].get("borrow")!!, datas[position].get("due")!!).toString() + "일"
         }
     }
 
@@ -148,20 +140,9 @@ class BorrowFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        //val view = inflater.inflate(R.layout.fragment_memo_list, container, false)
         binding = FragmentBorrowBinding.inflate(inflater, container, false)
 
         val dataList = mutableListOf<MutableMap<String,String>>()
-        /*var item = mutableMapOf<String,String>()
-
-         item.put("id", "0")
-         item .put("memo", "다음주 중간고사")
-         dataList.add(item)
-
-         item = mutableMapOf<String,String>()
-         item.put("id", "1")
-         item.put("memo", "오늘 엑스포")
-         dataList.add(item)*/
 
         dbHelper = DBHelper(activity)
         val db = dbHelper?.readableDatabase
@@ -192,6 +173,19 @@ class BorrowFragment : Fragment() {
         return binding.root
     }
 
+    fun calDuration(tDString: String, lDString: String): Long {
+        var calDate:Long = 0
+        val todayDateString = tDString
+        val lastDateString = lDString
+        val simpleDateFormat = SimpleDateFormat("yyyy/MM/dd")
+        if(!todayDateString.isEmpty() && todayDateString != null && !lastDateString.isEmpty() && lastDateString != null){
+            val today = simpleDateFormat.parse(todayDateString)
+            val last = simpleDateFormat.parse(lastDateString)
+
+            calDate = (last.time - today.time) / (24 * 60 * 60 * 1000)
+        }
+        return calDate
+    }
 
     fun addMemo(title:String, library:String, borrow:String, due: String ) {
         val db = dbHelper?.writableDatabase
@@ -219,6 +213,7 @@ class BorrowFragment : Fragment() {
     fun showManualEntry() {
         val dBinding = EditLayoutBinding.inflate(layoutInflater)
         val builder = AlertDialog.Builder(activity)
+        var count = 0
         dBinding.buttonCalendar.setOnClickListener {
             var calendar = Calendar.getInstance()
             var year = calendar.get(Calendar.YEAR)
@@ -228,6 +223,11 @@ class BorrowFragment : Fragment() {
                 DatePickerDialog(it1, { _, year, month, day ->
                     run {
                         dBinding.editText.setText(year.toString() + "/" + (month + 1).toString() + "/" + day.toString())
+                        if (count >= 1){
+                            dBinding.textShowDuration.text = "기간: " + calDuration(year.toString() + "/" + (month + 1).toString() + "/" + day.toString(),
+                                dBinding.editText2.text.toString()) + "일"
+                        }
+                        count++
                     }
                 }, year, month, day)
             }?.show()
@@ -241,6 +241,11 @@ class BorrowFragment : Fragment() {
                 DatePickerDialog(it1, { _, year, month, day ->
                     run {
                         dBinding.editText2.setText(year.toString() + "/" + (month + 1).toString() + "/" + day.toString())
+                        if(count >= 1){
+                            dBinding.textShowDuration.text = "기간: " + calDuration(dBinding.editText.text.toString(),
+                                year.toString() + "/" + (month + 1).toString() + "/" + day.toString()) + "일"
+                        }
+                        count++
                     }
                 }, year, month, day)
             }?.show()
@@ -253,6 +258,7 @@ class BorrowFragment : Fragment() {
                 val library = dBinding.editTextLib.text.toString()
                 val borrow = dBinding.editText.text.toString()
                 val due = dBinding.editText2.text.toString()
+                count = 0
                 addMemo(title, library, borrow, due)
             }
         })
@@ -267,6 +273,17 @@ class BorrowFragment : Fragment() {
 
     fun editMemo(pos:Int, title:String, library:String, borrow:String, due:String) {
         val dBinding = EditLayoutBinding.inflate(layoutInflater)
+        var count = 0
+        if (!borrow.isEmpty() && borrow != null && !due.isEmpty() && due != null){
+            dBinding.textShowDuration.text = "기간: " + calDuration(borrow, due).toString() + "일"
+            count = 2
+        }
+        else if (!borrow.isEmpty() && borrow != null || due.isEmpty() && due == null)
+            count = 1
+        else if (borrow.isEmpty() && borrow == null || !due.isEmpty() && due != null)
+            count = 1
+        else if (borrow.isEmpty() && borrow == null && due.isEmpty() && due == null)
+            count = 0
         dBinding.editTextTitle.setText(title)
         dBinding.editTextLib.setText(library)
         dBinding.editText.setText(borrow)
@@ -280,6 +297,11 @@ class BorrowFragment : Fragment() {
                 DatePickerDialog(it1, { _, year, month, day ->
                     run {
                         dBinding.editText.setText(year.toString() + "/" + (month + 1).toString() + "/" + day.toString())
+                        if (count >= 1){
+                            dBinding.textShowDuration.text = "기간: " + calDuration(year.toString() + "/" + (month + 1).toString() + "/" + day.toString(),
+                                dBinding.editText2.text.toString()) + "일"
+                        }
+                        count++
                     }
                 }, year, month, day)
             }?.show()
@@ -293,6 +315,11 @@ class BorrowFragment : Fragment() {
                 DatePickerDialog(it1, { _, year, month, day ->
                     run {
                         dBinding.editText2.setText(year.toString() + "/" + (month + 1).toString() + "/" + day.toString())
+                        if(count >= 1){
+                            dBinding.textShowDuration.text = "기간: " + calDuration(dBinding.editText.text.toString(),
+                                year.toString() + "/" + (month + 1).toString() + "/" + day.toString()) + "일"
+                        }
+                        count++
                     }
                 }, year, month, day)
             }?.show()
@@ -323,6 +350,7 @@ class BorrowFragment : Fragment() {
                     "id=${(adapter as MemoAdapter).datas[pos].get("id")}", null)
 
                 (binding.list.adapter as MemoAdapter).notifyDataSetChanged()
+                count = 0
             }
         })
         builder.setNegativeButton("Cancel", null)
