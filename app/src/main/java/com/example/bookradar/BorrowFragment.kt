@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper
 import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -96,8 +97,8 @@ class MemoAdapter(val fragment:BorrowFragment, val datas:MutableList<MutableMap<
         val binding = holder.binding
         val funcDuration = BorrowFragment()
         with(binding) {
-            textTitle.text = datas[position].get("title")
-            textLibrary.text = datas[position].get("library")
+            textTitle.text = "제목: " + datas[position].get("title")
+            textLibrary.text = "도서관: " + datas[position].get("library")
             textBorrow.text = datas[position].get("borrow")
             textDue.text = datas[position].get("due")
 
