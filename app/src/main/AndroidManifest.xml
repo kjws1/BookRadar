@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -13,7 +16,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.bookradar"
         tools:targetApi="31">
-        <meta-data android:name="kakao_api" android:value="323b975e45a8758e609fd7d27da046e3"/>
+        <activity
+            android:name=".MapActivity"
+            android:exported="false" />
+
+        <meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="AIzaSyAXoNv8ZpKHP39EPCsssu9vxTZ7ETbR_B8" />
+        <meta-data
+            android:name="kakao_api"
+            android:value="323b975e45a8758e609fd7d27da046e3" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -26,4 +39,5 @@
             </intent-filter>
         </activity>
     </application>
+
 </manifest>
