@@ -10,6 +10,7 @@ import android.widget.SearchView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bookradar.databinding.FragmentHomeBinding
@@ -40,9 +41,13 @@ class HomeFragment : Fragment() {
         val searchBar = binding.searchBook
         recyclerView = binding.listBook
         bookList = mutableListOf<DocumentModel>()
-        adapter = MyBookRecyclerViewAdapter(bookList){
-            TODO("transition to book info fragment")
-        }
+        adapter = MyBookRecyclerViewAdapter(bookList,
+            object : MyBookRecyclerViewAdapter.OnItemClickListener {
+                override fun onItemClick(item: DocumentModel) {
+                    val action = HomeFragmentDirections.actionNavHomeToNavBookInfo(item)
+                    findNavController().navigate(action)
+                }
+            })
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
 
@@ -60,8 +65,7 @@ class HomeFragment : Fragment() {
                 lifecycleScope.launch(Dispatchers.IO + coroutineExceptionHandler) {
                     val apikey: String =
                         "KakaoAK " + requireContext().packageManager.getApplicationInfo(
-                            requireContext().packageName,
-                            PackageManager.GET_META_DATA
+                            requireContext().packageName, PackageManager.GET_META_DATA
                         ).metaData.getString("kakao_api")!!
                     Log.d("apikey", apikey)
 
@@ -97,4 +101,5 @@ class HomeFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
 }

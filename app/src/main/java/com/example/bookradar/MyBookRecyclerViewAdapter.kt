@@ -7,9 +7,13 @@ import com.bumptech.glide.Glide
 import com.example.bookradar.databinding.FragmentItemBinding
 import com.example.bookradar.model.DocumentModel
 
+public interface OnItemClickListener {
+    fun onItemClick(item: DocumentModel)
+}
+
 class MyBookRecyclerViewAdapter(
     private var values: MutableList<DocumentModel>?,
-    private val listener: (DocumentModel) -> Unit
+    private val listener: OnItemClickListener
 ) : RecyclerView.Adapter<MyBookRecyclerViewAdapter.ViewHolder>() {
 
 
@@ -35,8 +39,8 @@ class MyBookRecyclerViewAdapter(
         holder.authorView.text = item.authors.joinToString(", ")
         holder.publisherView.text = item.publisher
         holder.isbnView.text = item.isbn
-        holder.layoutBookItem.setOnClickListener{
-            listener(item)
+        holder.layoutBookItem.setOnClickListener {
+            listener.onItemClick(item)
         }
 
         Glide.with(holder.itemView.context)
@@ -50,7 +54,9 @@ class MyBookRecyclerViewAdapter(
         fun onItemClick(item: DocumentModel)
     }
 
-    inner class ViewHolder(binding: FragmentItemBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(binding: FragmentItemBinding) : RecyclerView.ViewHolder(binding.root)
+        {
+
         val titleView = binding.textTitle
         val authorView = binding.textAuthor
         val publisherView = binding.textPublisher
@@ -59,5 +65,5 @@ class MyBookRecyclerViewAdapter(
         val layoutBookItem = binding.linearLayoutBookItem
 
     }
-
 }
+

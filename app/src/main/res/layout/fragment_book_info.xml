@@ -22,7 +22,11 @@
         android:id="@+id/textBookTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="30dp"
+        android:background="@drawable/rounded_corner"
+        android:elevation="5dp"
         android:gravity="center"
+        android:paddingVertical="8dp"
         android:text="미움받을 용기"
         android:textColor="@color/black"
         android:textSize="25sp"
@@ -34,62 +38,75 @@
         app:layout_constraintVertical_bias="0.068"
         tools:ignore="HardcodedText" />
 
-    <TextView
-        android:id="@+id/textAuthor"
-        android:layout_width="350dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="김민주"
-        android:textSize="15sp"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="15dp"
+        android:elevation="5dp"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textBookTitle"
-        app:layout_constraintVertical_bias="0.0"
-        tools:ignore="HardcodedText" />
+        app:layout_constraintVertical_bias="1.0">
 
-    <TextView
-        android:id="@+id/textPublisher"
-        android:layout_width="350dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:text="O'Reilly"
-        android:textSize="15sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/textAuthor"
-        app:layout_constraintStart_toStartOf="@+id/textAuthor"
-        app:layout_constraintTop_toBottomOf="@+id/textAuthor"
-        app:layout_constraintVertical_bias="0.0"
-        tools:ignore="HardcodedText" />
+        <TextView
+            android:id="@+id/textAuthor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="@dimen/margin_top_property"
+            android:background="@drawable/rounded_corner"
+            android:elevation="5dp"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="5dp"
+            android:text="김민주"
+            android:textSize="15sp"
+            tools:ignore="HardcodedText" />
 
-    <TextView
-        android:id="@+id/textIsbn"
-        android:layout_width="350dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:text="9375738239204"
-        android:textSize="15sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/textAuthor"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/textAuthor"
-        app:layout_constraintTop_toBottomOf="@+id/textPublisher"
-        app:layout_constraintVertical_bias="0.0"
-        tools:ignore="HardcodedText" />
-    <TextView
-        android:id="@+id/textContent"
-        android:layout_width="350dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:text="9375738239204"
-        android:textSize="15sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/textAuthor"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/textAuthor"
-        app:layout_constraintTop_toBottomOf="@+id/textIsbn"
-        app:layout_constraintVertical_bias="0.0"
-        tools:ignore="HardcodedText" />
+        <TextView
+            android:id="@+id/textPublisher"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="@dimen/margin_top_property"
+            android:background="@drawable/rounded_corner"
+            android:elevation="5dp"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="5dp"
+            android:text="O'Reilly"
+            android:textSize="15sp"
+            tools:ignore="HardcodedText" />
+
+        <TextView
+            android:id="@+id/textIsbn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="@dimen/margin_top_property"
+            android:background="@drawable/rounded_corner"
+            android:elevation="5dp"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="5dp"
+            android:text="9375738239204"
+            android:textSize="15sp"
+            tools:ignore="HardcodedText" />
+
+        <TextView
+            android:id="@+id/textContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="@dimen/margin_top_property"
+            android:background="@drawable/rounded_corner"
+            android:elevation="5dp"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="5dp"
+            android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+            android:textSize="15sp"
+            tools:ignore="HardcodedText" />
+    </LinearLayout>
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floatingActionButton"
         android:layout_width="wrap_content"
