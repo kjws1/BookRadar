@@ -40,7 +40,9 @@ class HomeFragment : Fragment() {
         val searchBar = binding.searchBook
         recyclerView = binding.listBook
         bookList = mutableListOf<DocumentModel>()
-        adapter = MyBookRecyclerViewAdapter(bookList)
+        adapter = MyBookRecyclerViewAdapter(bookList){
+            TODO("transition to book info fragment")
+        }
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
 

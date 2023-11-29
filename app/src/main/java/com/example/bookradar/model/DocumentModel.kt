@@ -1,5 +1,10 @@
 package com.example.bookradar.model
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+
+@Parcelize
 data class DocumentModel(
     val title: String,
     val contents: String,
@@ -12,4 +17,4 @@ data class DocumentModel(
     val price: Int,
     val sale_price: Int,
     val thumbnail: String
-)
+) : Parcelable
