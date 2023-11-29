@@ -14,30 +14,35 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bookradar.databinding.FragmentHomeBinding
+import com.example.bookradar.model.BookListModel
 import com.example.bookradar.model.DocumentModel
 import com.example.bookradar.retrofit.RetrofitHelper
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class HomeFragment : Fragment() {
 
-    private var _binding: FragmentHomeBinding? = null
     private lateinit var adapter: MyBookRecyclerViewAdapter
+    private lateinit var apiKey:String
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentHomeBinding
     private lateinit var recyclerView: RecyclerView
     private lateinit var bookList: MutableList<DocumentModel>
+    var rootView: View? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentHomeBinding.inflate(inflater, container, false)
-        val root: View = binding.root
+        if (rootView != null) {
+            return rootView as View
+        }
+        binding = FragmentHomeBinding.inflate(inflater, container, false)
+        rootView = binding.root
 
+        apiKey= "KakaoAK " + requireContext().packageManager.getApplicationInfo( requireContext().packageName, PackageManager.GET_META_DATA ).metaData.getString("kakao_api")!!
         val searchBar = binding.searchBook
         recyclerView = binding.listBook
         bookList = mutableListOf<DocumentModel>()
@@ -52,6 +57,7 @@ class HomeFragment : Fragment() {
         recyclerView.adapter = adapter
 
         searchBar.clearFocus()
+        var job: Job? = null
         searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 if (query.isNullOrEmpty()) {
@@ -62,19 +68,23 @@ class HomeFragment : Fragment() {
                 val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
                     throwable.printStackTrace()
                 }
-                lifecycleScope.launch(Dispatchers.IO + coroutineExceptionHandler) {
-                    val apikey: String =
-                        "KakaoAK " + requireContext().packageManager.getApplicationInfo(
-                            requireContext().packageName, PackageManager.GET_META_DATA
-                        ).metaData.getString("kakao_api")!!
-                    Log.d("apikey", apikey)
+                val prevListSize = bookList.size
+                bookList.clear()
+                adapter.notifyItemRangeRemoved(0, bookList.size)
+                job?.cancel()
+                job = lifecycleScope.launch(Dispatchers.IO + coroutineExceptionHandler) {
 
                     try {
-                        val response = RetrofitHelper.getInstance().getBooks(apikey, query)
-                        bookList.clear()
-                        bookList.addAll(response.documents)
-                        withContext(Dispatchers.Main) {
-                            adapter.notifyItemRangeChanged(0, bookList.size)
+                        var response: BookListModel? = null
+                        var prevSize = 0
+                        var page = 1
+                        while (response == null || response.meta.is_end.not()) {
+                            response = RetrofitHelper.getInstance().getBooks(apiKey, query, page++)
+                            bookList.addAll(response.documents)
+                            withContext(Dispatchers.Main) {
+                                adapter.notifyItemRangeChanged(prevSize, bookList.size)
+                            }
+                            prevSize = bookList.size
                         }
                     } catch (e: Exception) {
                         Log.e("Network Error", "Error fetching data", e)
@@ -94,12 +104,8 @@ class HomeFragment : Fragment() {
          homeViewModel.text.observe(viewLifecycleOwner) {
              textView.text = it
          }*/
-        return root
+        return rootView as View
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
 
 }
