@@ -15,9 +15,9 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
+import com.example.bookradar.databinding.BorrowingBookItemBinding
 import com.example.bookradar.databinding.EditLayoutBinding
 import com.example.bookradar.databinding.FragmentBorrowBinding
-import com.example.bookradar.databinding.MemoBinding
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Calendar
@@ -63,7 +63,7 @@ internal class DBHelper(context: Context?) :
     }
 }
 
-class MemoViewHolder(val adapter: MemoAdapter, val binding: MemoBinding) :
+class MemoViewHolder(val adapter: MemoAdapter, val binding: BorrowingBookItemBinding) :
     RecyclerView.ViewHolder(binding.root) {
     var itemPos = -1
     var itemId = 0
@@ -89,7 +89,7 @@ class MemoAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return MemoViewHolder(
             this,
-            MemoBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            BorrowingBookItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         )
     }
 
@@ -183,7 +183,7 @@ class BorrowFragment : Fragment() {
         }
 
         adapter = MemoAdapter(this, dataList)
-        binding.list.adapter = adapter
+        binding.borrowingBookList.adapter = adapter
 
         binding.fab.setOnClickListener {
             showManualEntry()
@@ -207,7 +207,7 @@ class BorrowFragment : Fragment() {
         item["library"] = library
         item["borrow"] = borrow
         item["due"] = due
-        (binding.list.adapter as MemoAdapter).datas.add(item)
+        (binding.borrowingBookList.adapter as MemoAdapter).datas.add(item)
 
         val value = ContentValues()
         value.put("id", itemID)
@@ -217,7 +217,7 @@ class BorrowFragment : Fragment() {
         value.put("due", due)
         db?.insert(DBContract.TABLE_NAME, null, value)
 
-        (binding.list.adapter as MemoAdapter).notifyDataSetChanged()
+        (binding.borrowingBookList.adapter as MemoAdapter).notifyDataSetChanged()
 
     }
 
@@ -352,7 +352,7 @@ class BorrowFragment : Fragment() {
                 "id=${(adapter as MemoAdapter).datas[pos].get("id")}", null
             )
 
-            (binding.list.adapter as MemoAdapter).notifyDataSetChanged()
+            (binding.borrowingBookList.adapter as MemoAdapter).notifyDataSetChanged()
         }
         builder.setNegativeButton("Cancel", null)
         builder.show()
