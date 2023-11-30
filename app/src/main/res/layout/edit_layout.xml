@@ -86,7 +86,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/edit_layout_height"
+            android:layout_height="90dp"
             android:orientation="horizontal"
             android:paddingHorizontal="20dp">
 
@@ -104,9 +104,11 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:isScrollContainer="true"
-                android:scrollIndicators="end"
-                android:scrollbars="vertical" />
+
+                android:fadeScrollbars="true"
+                android:longClickable="false"
+                android:pointerIcon="handwriting"
+                android:theme="@style/NumberPickterText" />
 
         </LinearLayout>
 

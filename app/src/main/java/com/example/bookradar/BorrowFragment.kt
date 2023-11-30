@@ -277,15 +277,18 @@ class BorrowFragment : Fragment() {
             )
         }
 
-        eBinding.spinnerDuration.maxValue = 31
-        eBinding.spinnerDuration.minValue = 1
-        eBinding.spinnerDuration.setOnValueChangedListener { _, _, newVal ->
-            val borrowDate = LocalDate.parse(
-                eBinding.editTextBorrowDate.text,
-                DateTimeFormatter.ISO_LOCAL_DATE
-            )
-            val dueDate = borrowDate.plusDays(newVal.toLong())
-            eBinding.editTextDueDate.setText(dueDate.format(DateTimeFormatter.ISO_LOCAL_DATE))
+        eBinding.spinnerDuration.apply {
+            maxValue = 31
+            minValue = 1
+
+            setOnValueChangedListener { _, _, newVal ->
+                val borrowDate = LocalDate.parse(
+                    eBinding.editTextBorrowDate.text,
+                    DateTimeFormatter.ISO_LOCAL_DATE
+                )
+                val dueDate = borrowDate.plusDays(newVal.toLong())
+                eBinding.editTextDueDate.setText(dueDate.format(DateTimeFormatter.ISO_LOCAL_DATE))
+            }
         }
         eBinding.imageButtonCalendarBorrowDate.setOnClickListener(
             calendarClickListener(
