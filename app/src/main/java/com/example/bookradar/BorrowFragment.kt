@@ -4,23 +4,22 @@ import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.content.ContentValues
 import android.content.Context
-import android.content.DialogInterface
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.os.Build
 import android.os.Bundle
-import android.preference.PreferenceManager
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
+import com.example.bookradar.databinding.BorrowingBookItemBinding
 import com.example.bookradar.databinding.EditLayoutBinding
 import com.example.bookradar.databinding.FragmentBorrowBinding
-import com.example.bookradar.databinding.MemoBinding
-import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.Calendar
 
 /**
@@ -64,7 +63,8 @@ internal class DBHelper(context: Context?) :
     }
 }
 
-class MemoViewHolder(val adapter: MemoAdapter, val binding: MemoBinding) : RecyclerView.ViewHolder(binding.root) {
+class MemoViewHolder(val adapter: MemoAdapter, val binding: BorrowingBookItemBinding) :
+    RecyclerView.ViewHolder(binding.root) {
     var itemPos = -1
     var itemId = 0
 
@@ -81,28 +81,45 @@ class MemoViewHolder(val adapter: MemoAdapter, val binding: MemoBinding) : Recyc
     }
 }
 
-class MemoAdapter(val fragment:BorrowFragment, val datas:MutableList<MutableMap<String,String>>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    var backColor:Int = 1 //Color.rgb(0xFE,0xFB, 0xE5)
-    var divide:Boolean = true
-    var line:Boolean = true
+class MemoAdapter(
+    val fragment: BorrowFragment,
+    val datas: MutableList<MutableMap<String, String>>
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return MemoViewHolder(this, MemoBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+        return MemoViewHolder(
+            this,
+            BorrowingBookItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        )
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val item = datas[position]
         (holder as MemoViewHolder).itemPos = position
         holder.itemId = datas[position].get("id")!!.toInt()
         val binding = holder.binding
         val funcDuration = BorrowFragment()
         with(binding) {
-            textTitle.text = "제목: " + datas[position].get("title")
+            textTitle.text = "책제목: " + datas[position].get("title")
             textLibrary.text = "도서관: " + datas[position].get("library")
             textBorrow.text = datas[position].get("borrow")
             textDue.text = datas[position].get("due")
+            val borrowDate = datas[position]["borrow"]?.let {
+                LocalDate.parse(
+                    it,
+                    DateTimeFormatter.ISO_LOCAL_DATE
+                )
+            }!!
+            val dueDate = datas[position]["due"]?.let {
+                LocalDate.parse(
+                    it,
+                    DateTimeFormatter.ISO_LOCAL_DATE
+                )
+            }!!
+            val duration = funcDuration.calculateDuration(borrowDate, dueDate)
 
-            textDuration.text = "기간: " + funcDuration.calDuration(datas[position].get("borrow")!!, datas[position].get("due")!!).toString() + "일"
+            textDuration.text = "기간: ${duration}일"
         }
     }
 
@@ -110,94 +127,87 @@ class MemoAdapter(val fragment:BorrowFragment, val datas:MutableList<MutableMap<
         return datas.size
     }
 
-    fun delItem(itemPos:Int) {
-        if(itemPos != -1) {
-            fragment.delItem(datas[itemPos].get("id")?.toInt()!!)
+    fun delItem(itemPos: Int) {
+        if (itemPos != -1) {
+            fragment.delMemo(datas[itemPos]["id"]!!.toInt())
             datas.removeAt(itemPos)
             notifyDataSetChanged()
         }
     }
 
-    fun editItem(itemPos:Int) {
-        if(itemPos != -1) {
-            fragment.editMemo(itemPos, datas[itemPos].get("title")!!, datas[itemPos].get("library")!!, datas[itemPos].get("borrow")!!, datas[itemPos].get("due")!!)
+    fun editItem(itemPos: Int) {
+        if (itemPos != -1) {
+            fragment.editMemo(
+                itemPos,
+                datas[itemPos]["title"]!!,
+                datas[itemPos]["library"]!!,
+                datas[itemPos]["borrow"]!!,
+                datas[itemPos]["due"]!!
+            )
         }
     }
 }
 
 class BorrowFragment : Fragment() {
-    lateinit var binding : FragmentBorrowBinding
-    var adapter:MemoAdapter? = null
-    var itemID:Int = 0
-    private var dbHelper:DBHelper? = null
+    lateinit var binding: FragmentBorrowBinding
+    private var adapter: MemoAdapter? = null
+    private var itemID: Int = 0
+    private var dbHelper: DBHelper? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentBorrowBinding.inflate(inflater, container, false)
 
-        val dataList = mutableListOf<MutableMap<String,String>>()
+        val dataList = mutableListOf<MutableMap<String, String>>()
 
         dbHelper = DBHelper(activity)
         val db = dbHelper?.readableDatabase
         val cursor = db?.rawQuery(DBContract.SQL_LOAD, null, null)
-        while(cursor?.moveToNext()!!) {
-            var item = mutableMapOf<String,String>()
-            item.put("id", cursor?.getInt(0)?.toString()!!)
-            item.put("title", cursor?.getString(1)!!)
-            item.put("library", cursor?.getString(2)!!)
-            item.put("borrow", cursor?.getString(3)!!)
-            item.put("due", cursor?.getString(4)!!)
+        while (cursor?.moveToNext()!!) {
+            val item = mutableMapOf<String, String>()
+            item["id"] = cursor.getInt(0).toString()
+            item["title"] = cursor.getString(1)!!
+            item["library"] = cursor.getString(2)!!
+            item["borrow"] = cursor.getString(3)!!
+            item["due"] = cursor.getString(4)!!
             dataList.add(item)
-            itemID = cursor?.getInt(0)!!
+            itemID = cursor.getInt(0)
         }
 
-        adapter = MemoAdapter(this@BorrowFragment, dataList)
-        binding.list.adapter = adapter
+        adapter = MemoAdapter(this, dataList)
+        binding.borrowingBookList.adapter = adapter
 
-        val sPreference = PreferenceManager.getDefaultSharedPreferences(activity?.applicationContext!!)
-        (adapter as MemoAdapter).backColor = sPreference.getString("backcolor", "1")!!.toInt()
-        (adapter as MemoAdapter).divide = sPreference.getBoolean("divider", true)
-        (adapter as MemoAdapter).line = sPreference.getBoolean("line", true)
-
-        binding.fab.setOnClickListener{
+        binding.fab.setOnClickListener {
             showManualEntry()
         }
 
         return binding.root
     }
 
-    fun calDuration(tDString: String, lDString: String): Long {
-        var calDate:Long = 0
-        val todayDateString = tDString
-        val lastDateString = lDString
-        val simpleDateFormat = SimpleDateFormat("yyyy/MM/dd")
-        if(!todayDateString.isEmpty() && todayDateString != null && !lastDateString.isEmpty() && lastDateString != null){
-            val today = simpleDateFormat.parse(todayDateString)
-            val last = simpleDateFormat.parse(lastDateString)
-
-            calDate = (last.time - today.time) / (24 * 60 * 60 * 1000)
-        }
-        return calDate
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun calculateDuration(fromTime: LocalDate, toTime: LocalDate): Long {
+        return fromTime.until(toTime, java.time.temporal.ChronoUnit.DAYS)
     }
 
-    fun addMemo(title:String, library:String, borrow:String, due: String ) {
+    private fun addMemo(title: String, library: String, borrow: String, due: String) {
         val db = dbHelper?.writableDatabase
 
-        val item = mutableMapOf<String,String>()
+        val item = mutableMapOf<String, String>()
         itemID++
-        item.put("id", itemID.toString())
-        item.put("title", title)
-        item.put("library", library)
-        item.put("borrow", borrow)
-        item.put("due", due)
-        (binding.list.adapter as MemoAdapter).datas.add(item)
+        item["id"] = itemID.toString()
+        item["title"] = title
+        item["library"] = library
+        item["borrow"] = borrow
+        item["due"] = due
+        (binding.borrowingBookList.adapter as MemoAdapter).datas.add(item)
 
         val value = ContentValues()
         value.put("id", itemID)
@@ -207,154 +217,145 @@ class BorrowFragment : Fragment() {
         value.put("due", due)
         db?.insert(DBContract.TABLE_NAME, null, value)
 
-        (binding.list.adapter as MemoAdapter).notifyDataSetChanged()
+        (binding.borrowingBookList.adapter as MemoAdapter).notifyDataSetChanged()
 
     }
-    fun showManualEntry() {
-        val dBinding = EditLayoutBinding.inflate(layoutInflater)
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun calendarClickListener(
+        eBinding: EditLayoutBinding,
+        targetView: TextView
+    ): View.OnClickListener {
+        return View.OnClickListener {
+            val today = LocalDate.now()
+            var setDate: Calendar? = null
+            DatePickerDialog(
+                requireContext(),
+                { view, year, month, dayOfMonth ->
+                    setDate = Calendar.getInstance()
+                    setDate?.set(year, month, dayOfMonth)
+
+                    targetView.text = LocalDate.of(
+                        setDate!!.get(Calendar.YEAR),
+                        setDate!!.get(Calendar.MONTH) + 1,
+                        setDate!!.get(Calendar.DAY_OF_MONTH)
+                    ).format(DateTimeFormatter.ISO_LOCAL_DATE)
+
+                    if (eBinding.editTextDueDate.text.isNotEmpty() && eBinding.editTextBorrowDate.text.isNotEmpty()) {
+                        val borrowDate = LocalDate.parse(
+                            eBinding.editTextBorrowDate.text,
+                            DateTimeFormatter.ISO_LOCAL_DATE
+                        )
+                        val dueDate =
+                            LocalDate.parse(
+                                eBinding.editTextDueDate.text,
+                                DateTimeFormatter.ISO_LOCAL_DATE
+                            )
+                        val duration = calculateDuration(borrowDate, dueDate)
+                        eBinding.spinnerDuration.value = duration.toInt()
+                    }
+                }, today.year, today.monthValue, today.dayOfMonth
+            ).show()
+
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun showManualEntry() {
+        val eBinding = EditLayoutBinding.inflate(layoutInflater)
         val builder = AlertDialog.Builder(activity)
-        var count = 0
-        dBinding.buttonCalendar.setOnClickListener {
-            var calendar = Calendar.getInstance()
-            var year = calendar.get(Calendar.YEAR)
-            var month = calendar.get(Calendar.MONTH)
-            var day = calendar.get(Calendar.DAY_OF_MONTH)
-            context?.let { it1 ->
-                DatePickerDialog(it1, { _, year, month, day ->
-                    run {
-                        dBinding.editText.setText(year.toString() + "/" + (month + 1).toString() + "/" + day.toString())
-                        if (count >= 1){
-                            dBinding.textShowDuration.text = "기간: " + calDuration(year.toString() + "/" + (month + 1).toString() + "/" + day.toString(),
-                                dBinding.editText2.text.toString()) + "일"
-                        }
-                        count++
-                    }
-                }, year, month, day)
-            }?.show()
+        // set the default date to borrow date today
+        if (eBinding.editTextBorrowDate.text.isNullOrEmpty()) {
+            eBinding.editTextBorrowDate.setText(
+                LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE).toString()
+            )
         }
-        dBinding.buttonCalendar2.setOnClickListener {
-            var calendar = Calendar.getInstance()
-            var year = calendar.get(Calendar.YEAR)
-            var month = calendar.get(Calendar.MONTH)
-            var day = calendar.get(Calendar.DAY_OF_MONTH)
-            context?.let { it1 ->
-                DatePickerDialog(it1, { _, year, month, day ->
-                    run {
-                        dBinding.editText2.setText(year.toString() + "/" + (month + 1).toString() + "/" + day.toString())
-                        if(count >= 1){
-                            dBinding.textShowDuration.text = "기간: " + calDuration(dBinding.editText.text.toString(),
-                                year.toString() + "/" + (month + 1).toString() + "/" + day.toString()) + "일"
-                        }
-                        count++
-                    }
-                }, year, month, day)
-            }?.show()
+        // set the default date of due date to today
+        if (eBinding.editTextDueDate.text.isNullOrEmpty()) {
+            eBinding.editTextDueDate.setText(
+                LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE).toString()
+            )
         }
-        builder.setTitle("메모 입력")
-        builder.setView(dBinding.root)
-        builder.setPositiveButton("Ok", object:DialogInterface.OnClickListener {
-            override fun onClick(p0: DialogInterface?, p1: Int) {
-                val title = dBinding.editTextTitle.text.toString()
-                val library = dBinding.editTextLib.text.toString()
-                val borrow = dBinding.editText.text.toString()
-                val due = dBinding.editText2.text.toString()
-                count = 0
-                addMemo(title, library, borrow, due)
+
+        eBinding.spinnerDuration.apply {
+            maxValue = 31
+            minValue = 1
+
+            setOnValueChangedListener { _, _, newVal ->
+                val borrowDate = LocalDate.parse(
+                    eBinding.editTextBorrowDate.text,
+                    DateTimeFormatter.ISO_LOCAL_DATE
+                )
+                val dueDate = borrowDate.plusDays(newVal.toLong())
+                eBinding.editTextDueDate.setText(dueDate.format(DateTimeFormatter.ISO_LOCAL_DATE))
             }
-        })
+        }
+        eBinding.imageButtonCalendarBorrowDate.setOnClickListener(
+            calendarClickListener(
+                eBinding,
+                eBinding.editTextBorrowDate
+            )
+        )
+        eBinding.imageButtonCalendarDueDate.setOnClickListener(
+            calendarClickListener(
+                eBinding,
+                eBinding.editTextDueDate
+            )
+        )
+
+        builder.setTitle("메모 입력")
+        builder.setView(eBinding.root)
+        builder.setPositiveButton("Ok") { p0, p1 ->
+            val title = eBinding.editTextBookTitle.text.toString()
+            val library = eBinding.editTextLibrary.text.toString()
+            val borrow = eBinding.editTextBorrowDate.text.toString()
+            val due = eBinding.editTextDueDate.text.toString()
+            addMemo(title, library, borrow, due)
+        }
         builder.setNegativeButton("Cancel", null)
         builder.show()
     }
 
-    fun delItem(id:Int) {
+    fun delMemo(id: Int) {
         val db = dbHelper?.writableDatabase
         db?.delete(DBContract.TABLE_NAME, "id=$id", null)
     }
 
-    fun editMemo(pos:Int, title:String, library:String, borrow:String, due:String) {
-        val dBinding = EditLayoutBinding.inflate(layoutInflater)
-        var count = 0
-        if (!borrow.isEmpty() && borrow != null && !due.isEmpty() && due != null){
-            dBinding.textShowDuration.text = "기간: " + calDuration(borrow, due).toString() + "일"
-            count = 2
-        }
-        else if (!borrow.isEmpty() && borrow != null || due.isEmpty() && due == null)
-            count = 1
-        else if (borrow.isEmpty() && borrow == null || !due.isEmpty() && due != null)
-            count = 1
-        else if (borrow.isEmpty() && borrow == null && due.isEmpty() && due == null)
-            count = 0
-        dBinding.editTextTitle.setText(title)
-        dBinding.editTextLib.setText(library)
-        dBinding.editText.setText(borrow)
-        dBinding.editText2.setText(due)
-        dBinding.buttonCalendar.setOnClickListener {
-            var calendar = Calendar.getInstance()
-            var year = calendar.get(Calendar.YEAR)
-            var month = calendar.get(Calendar.MONTH)
-            var day = calendar.get(Calendar.DAY_OF_MONTH)
-            context?.let { it1 ->
-                DatePickerDialog(it1, { _, year, month, day ->
-                    run {
-                        dBinding.editText.setText(year.toString() + "/" + (month + 1).toString() + "/" + day.toString())
-                        if (count >= 1){
-                            dBinding.textShowDuration.text = "기간: " + calDuration(year.toString() + "/" + (month + 1).toString() + "/" + day.toString(),
-                                dBinding.editText2.text.toString()) + "일"
-                        }
-                        count++
-                    }
-                }, year, month, day)
-            }?.show()
-        }
-        dBinding.buttonCalendar2.setOnClickListener {
-            var calendar = Calendar.getInstance()
-            var year = calendar.get(Calendar.YEAR)
-            var month = calendar.get(Calendar.MONTH)
-            var day = calendar.get(Calendar.DAY_OF_MONTH)
-            context?.let { it1 ->
-                DatePickerDialog(it1, { _, year, month, day ->
-                    run {
-                        dBinding.editText2.setText(year.toString() + "/" + (month + 1).toString() + "/" + day.toString())
-                        if(count >= 1){
-                            dBinding.textShowDuration.text = "기간: " + calDuration(dBinding.editText.text.toString(),
-                                year.toString() + "/" + (month + 1).toString() + "/" + day.toString()) + "일"
-                        }
-                        count++
-                    }
-                }, year, month, day)
-            }?.show()
-        }
+    fun editMemo(pos: Int, title: String, library: String, borrow: String, due: String) {
+        val eBinding = EditLayoutBinding.inflate(layoutInflater)
+        eBinding.editTextBookTitle.setText(title)
+        eBinding.editTextLibrary.setText(library)
+        eBinding.editTextBorrowDate.setText(borrow)
+        eBinding.editTextDueDate.setText(due)
         val builder = AlertDialog.Builder(activity)
         builder.setTitle("메모 입력")
-        builder.setView(dBinding.root)
-        builder.setPositiveButton("Ok", object:DialogInterface.OnClickListener {
-            override fun onClick(p0: DialogInterface?, p1: Int) {
-                val db = dbHelper?.writableDatabase
-                val title = dBinding.editTextTitle.text.toString()
-                val library = dBinding.editTextLib.text.toString()
-                val borrow = dBinding.editText.text.toString()
-                val due = dBinding.editText2.text.toString()
+        builder.setView(eBinding.root)
+        builder.setPositiveButton("Ok") { p0, p1 ->
+            val db = dbHelper?.writableDatabase
+            val title = eBinding.editTextBookTitle.text.toString()
+            val library = eBinding.editTextLibrary.text.toString()
+            val borrow = eBinding.editTextBorrowDate.text.toString()
+            val due = eBinding.editTextDueDate.text.toString()
 
-                (adapter as MemoAdapter).datas[pos].put("title", title)
-                (adapter as MemoAdapter).datas[pos].put("library", library)
-                (adapter as MemoAdapter).datas[pos].put("borrow", borrow)
-                (adapter as MemoAdapter).datas[pos].put("due", due)
+            adapter!!.datas[pos]["title"] = title
+            adapter!!.datas[pos]["library"] = library
+            adapter!!.datas[pos]["borrow"] = borrow
+            adapter!!.datas[pos]["due"] = due
 
+            val value = ContentValues()
+            value.put("title", title)
+            value.put("library", library)
+            value.put("borrow", borrow)
+            value.put("due", due)
+            db?.update(
+                DBContract.TABLE_NAME, value,
+                "id=${(adapter as MemoAdapter).datas[pos].get("id")}", null
+            )
 
-                val value = ContentValues()
-                value.put("title", title)
-                value.put("library", library)
-                value.put("borrow", borrow)
-                value.put("due", due)
-                db?.update(DBContract.TABLE_NAME, value,
-                    "id=${(adapter as MemoAdapter).datas[pos].get("id")}", null)
-
-                (binding.list.adapter as MemoAdapter).notifyDataSetChanged()
-                count = 0
-            }
-        })
+            (binding.borrowingBookList.adapter as MemoAdapter).notifyDataSetChanged()
+        }
         builder.setNegativeButton("Cancel", null)
         builder.show()
     }
-}
 
+}
