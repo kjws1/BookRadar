@@ -27,6 +27,6 @@
     <string name="hint_duration">Borrowing duration</string>
     <string name="due_date">Due Date</string>
     <string name="text_borrowing_date">Borrowing Date</string>
-    <string name="borrow_date_selector">Borrow date selector</string>
+    <string name="borrow_date_selector">Borrowing date selector</string>
     <string name="due_date_selector">Due date selector</string>
 </resources>
