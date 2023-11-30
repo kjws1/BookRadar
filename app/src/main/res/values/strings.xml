@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">bookradar</string>
+    <string name="app_name">Book Radar</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Info</string>
@@ -19,4 +19,17 @@
     <string name="filter_genre_science">Science</string>
     <string name="image_book_cover_desc">Book cover image</string>
     <string name="hint_search_bar">Book title</string>
+    <string name="text_library">Library</string>
+    <string name="hint_library">Library Name</string>
+    <string name="hint_book_title">Book Title</string>
+    <string name="text_book_title">Book Title</string>
+    <string name="text_duration">Duration</string>
+    <string name="hint_duration">Borrowing duration</string>
+    <string name="due_date">Due Date</string>
+    <string name="text_borrowing_date">Borrowing Date</string>
+    <string name="borrow_date_selector">Borrowing date selector</string>
+    <string name="due_date_selector">Due date selector</string>
+    <string name="unknown_author">Unknown Author</string>
+    <string name="start_scanning">Start scanning</string>
+    <string name="nav_book_info">Book Info</string>
 </resources>
