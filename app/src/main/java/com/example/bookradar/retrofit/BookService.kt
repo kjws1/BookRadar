@@ -9,6 +9,8 @@ interface BookService {
     @GET("/v3/search/book")
     suspend fun getBooks(
         @Header("Authorization") authorization: String,
-        @Query("query") query: String
+        @Query("query") query: String,
+        @Query("page") page: Int = 1,
+        @Query("size") size: Int = 50,
     ): BookListModel
 }
