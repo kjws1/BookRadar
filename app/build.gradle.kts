@@ -36,7 +36,8 @@ android {
         release {
             isMinifyEnabled = false
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
             )
         }
     }
@@ -56,7 +57,6 @@ android {
     }
     buildToolsVersion = "34.0.0"
 }
-
 
 dependencies {
 
@@ -79,6 +79,10 @@ dependencies {
     implementation("com.github.bumptech.glide:glide:4.13.2")
     implementation("jp.wasabeef:glide-transformations:4.3.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.13.2")
+
+    implementation("com.google.android.gms:play-services-maps:18.0.2")//구글 지도를 위한 라이브러리 추가
+
+    implementation("com.google.android.gms:play-services-location:21.0.1")//사용자 위치를 얻기 위한 라이브러리 추가
 
 
     testImplementation("junit:junit:4.13.2")

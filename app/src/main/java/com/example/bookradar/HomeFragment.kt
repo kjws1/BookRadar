@@ -1,5 +1,6 @@
 package com.example.bookradar
 
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
@@ -98,6 +99,13 @@ class HomeFragment : Fragment() {
             }
 
         })
+
+        binding.checkBox2.setOnClickListener{
+            activity?.let {
+                val intent = Intent(activity, MapActivity::class.java)  /// MapActivity로 화면 전환
+                startActivity(intent)
+            }
+        }
 
         /* val textView: TextView = binding.textHome
          homeViewModel.text.observe(viewLifecycleOwner) {
