@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -17,6 +16,7 @@ import com.example.bookradar.databinding.FragmentHomeBinding
 import com.example.bookradar.model.BookListModel
 import com.example.bookradar.model.DocumentModel
 import com.example.bookradar.retrofit.RetrofitHelper
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -26,7 +26,7 @@ import kotlinx.coroutines.withContext
 class HomeFragment : Fragment() {
 
     private lateinit var adapter: MyBookRecyclerViewAdapter
-    private lateinit var apiKey:String
+    private lateinit var apiKey: String
 
     private lateinit var binding: FragmentHomeBinding
     private lateinit var recyclerView: RecyclerView
@@ -42,7 +42,10 @@ class HomeFragment : Fragment() {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         rootView = binding.root
 
-        apiKey= "KakaoAK " + requireContext().packageManager.getApplicationInfo( requireContext().packageName, PackageManager.GET_META_DATA ).metaData.getString("kakao_api")!!
+        apiKey = "KakaoAK " + requireContext().packageManager.getApplicationInfo(
+            requireContext().packageName,
+            PackageManager.GET_META_DATA
+        ).metaData.getString("kakao_api")!!
         val searchBar = binding.searchBook
         recyclerView = binding.listBook
         bookList = mutableListOf<DocumentModel>()
@@ -59,21 +62,15 @@ class HomeFragment : Fragment() {
         searchBar.clearFocus()
         var job: Job? = null
         searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                if (query.isNullOrEmpty()) {
-                    Toast.makeText(context, R.string.error_empty_search_field, Toast.LENGTH_LONG)
-                        .show()
-                    return true
-                }
+            override fun onQueryTextSubmit(query: String): Boolean {
                 val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
                     throwable.printStackTrace()
                 }
                 val prevListSize = bookList.size
                 bookList.clear()
-                adapter.notifyItemRangeRemoved(0, bookList.size)
+                adapter.notifyItemRangeRemoved(0, prevListSize)
                 job?.cancel()
                 job = lifecycleScope.launch(Dispatchers.IO + coroutineExceptionHandler) {
-
                     try {
                         var response: BookListModel? = null
                         var prevSize = 0
@@ -86,6 +83,8 @@ class HomeFragment : Fragment() {
                             }
                             prevSize = bookList.size
                         }
+                    } catch (_: CancellationException) {
+                        Log.d("Coroutine", "Job cancelled")
                     } catch (e: Exception) {
                         Log.e("Network Error", "Error fetching data", e)
                     }
