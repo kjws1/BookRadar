@@ -28,7 +28,7 @@
                 android:textSize="13dp" />
 
             <EditText
-                android:id="@+id/editText"
+                android:id="@+id/edit_text_borrow_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -39,7 +39,7 @@
                 android:textAlignment="center" />
 
             <ImageView
-                android:id="@+id/buttonCalendar"
+                android:id="@+id/button_calendar_borrow"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginLeft="10dp"
@@ -68,7 +68,7 @@
                 android:textSize="13dp" />
 
             <EditText
-                android:id="@+id/editText2"
+                android:id="@+id/edit_text_due_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -79,7 +79,7 @@
                 android:textAlignment="center" />
 
             <ImageView
-                android:id="@+id/buttonCalendar2"
+                android:id="@+id/button_calendar_due"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginLeft="10dp"
