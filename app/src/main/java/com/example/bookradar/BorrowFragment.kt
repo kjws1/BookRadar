@@ -252,7 +252,7 @@ class BorrowFragment : Fragment() {
                                 DateTimeFormatter.ISO_LOCAL_DATE
                             )
                         val duration = calculateDuration(borrowDate, dueDate)
-                        eBinding.textShowDuration.text = "기간: ${duration}일"
+                        eBinding.spinnerDuration.value = duration.toInt()
                     }
                 }, today.year, today.monthValue, today.dayOfMonth
             ).show()
@@ -276,13 +276,24 @@ class BorrowFragment : Fragment() {
                 LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE).toString()
             )
         }
-        eBinding.buttonCalendarBorrow.setOnClickListener(
+
+        eBinding.spinnerDuration.maxValue = 31
+        eBinding.spinnerDuration.minValue = 1
+        eBinding.spinnerDuration.setOnValueChangedListener { _, _, newVal ->
+            val borrowDate = LocalDate.parse(
+                eBinding.editTextBorrowDate.text,
+                DateTimeFormatter.ISO_LOCAL_DATE
+            )
+            val dueDate = borrowDate.plusDays(newVal.toLong())
+            eBinding.editTextDueDate.setText(dueDate.format(DateTimeFormatter.ISO_LOCAL_DATE))
+        }
+        eBinding.imageButtonCalendarBorrowDate.setOnClickListener(
             calendarClickListener(
                 eBinding,
                 eBinding.editTextBorrowDate
             )
         )
-        eBinding.buttonCalendarDue.setOnClickListener(
+        eBinding.imageButtonCalendarDueDate.setOnClickListener(
             calendarClickListener(
                 eBinding,
                 eBinding.editTextDueDate
@@ -292,8 +303,8 @@ class BorrowFragment : Fragment() {
         builder.setTitle("메모 입력")
         builder.setView(eBinding.root)
         builder.setPositiveButton("Ok") { p0, p1 ->
-            val title = eBinding.editTextTitle.text.toString()
-            val library = eBinding.editTextLib.text.toString()
+            val title = eBinding.editTextBookTitle.text.toString()
+            val library = eBinding.editTextLibrary.text.toString()
             val borrow = eBinding.editTextBorrowDate.text.toString()
             val due = eBinding.editTextDueDate.text.toString()
             addMemo(title, library, borrow, due)
@@ -309,8 +320,8 @@ class BorrowFragment : Fragment() {
 
     fun editMemo(pos: Int, title: String, library: String, borrow: String, due: String) {
         val eBinding = EditLayoutBinding.inflate(layoutInflater)
-        eBinding.editTextTitle.setText(title)
-        eBinding.editTextLib.setText(library)
+        eBinding.editTextBookTitle.setText(title)
+        eBinding.editTextLibrary.setText(library)
         eBinding.editTextBorrowDate.setText(borrow)
         eBinding.editTextDueDate.setText(due)
         val builder = AlertDialog.Builder(activity)
@@ -318,8 +329,8 @@ class BorrowFragment : Fragment() {
         builder.setView(eBinding.root)
         builder.setPositiveButton("Ok") { p0, p1 ->
             val db = dbHelper?.writableDatabase
-            val title = eBinding.editTextTitle.text.toString()
-            val library = eBinding.editTextLib.text.toString()
+            val title = eBinding.editTextBookTitle.text.toString()
+            val library = eBinding.editTextLibrary.text.toString()
             val borrow = eBinding.editTextBorrowDate.text.toString()
             val due = eBinding.editTextDueDate.text.toString()
 
