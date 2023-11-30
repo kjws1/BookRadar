@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/edit_layout_height"
+            android:orientation="horizontal"
+            android:paddingHorizontal="20dp">
+
+            <TextView
+                android:id="@+id/textViewBorrowDate"
+                android:layout_width="@dimen/edit_layout_text_width"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:maxLines="1"
+                android:text="@string/text_borrowing_date"
+                android:textSize="13sp" />
+
+            <EditText
+                android:id="@+id/editTextBorrowDate"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:autofillHints=""
+                android:ems="10"
+                android:focusable="false"
+                android:inputType="datetime"
+                android:textAlignment="center" />
+
+            <ImageButton
+                android:id="@+id/imageButtonCalendarBorrowDate"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="#00000000"
+                android:contentDescription="Borrow date selector"
+                android:scaleType="fitCenter"
+                android:src="@drawable/calendar" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/edit_layout_height"
+            android:orientation="horizontal"
+            android:paddingHorizontal="20dp">
+
+            <TextView
+                android:id="@+id/textViewDueDate"
+                android:layout_width="@dimen/edit_layout_text_width"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:maxLines="1"
+                android:text="@string/due_date"
+                android:textSize="13sp" />
+
+            <EditText
+                android:id="@+id/editTextDueDate"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:autofillHints=""
+                android:ems="10"
+                android:focusable="false"
+                android:inputType="datetime"
+                android:textAlignment="center" />
+
+            <ImageButton
+                android:id="@+id/imageButtonCalendarDueDate"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="#00000000"
+                android:contentDescription="@string/due_date_selector"
+                android:scaleType="fitCenter"
+                android:src="@drawable/calendar" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:orientation="horizontal"
+            android:paddingHorizontal="20dp">
+
+            <TextView
+                android:id="@+id/textViewDuration"
+                android:layout_width="@dimen/edit_layout_text_width"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:maxLines="1"
+                android:text="@string/text_duration"
+                android:textSize="13sp" />
+
+            <NumberPicker
+                android:id="@+id/spinnerDuration"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+
+                android:fadeScrollbars="true"
+                android:longClickable="false"
+                android:pointerIcon="handwriting"
+                android:theme="@style/NumberPickterText" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/edit_layout_height"
+            android:orientation="horizontal"
+            android:paddingHorizontal="20dp">
+
+            <TextView
+                android:id="@+id/textViewBookTitle"
+                android:layout_width="@dimen/edit_layout_text_width"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="@string/text_book_title"
+                android:textSize="13sp" />
+
+            <EditText
+                android:id="@+id/editTextBookTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:autofillHints=""
+                android:ems="10"
+                android:hint="@string/hint_book_title"
+                android:inputType="text"
+                android:textAlignment="center" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/edit_layout_height"
+            android:orientation="horizontal"
+            android:paddingHorizontal="20dp">
+
+            <TextView
+                android:id="@+id/textViewLibrary"
+                android:layout_width="@dimen/edit_layout_text_width"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="@string/text_library"
+                android:textSize="13sp" />
+
+            <EditText
+                android:id="@+id/editTextLibrary"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:ems="10"
+                android:hint="@string/hint_library"
+                android:inputType="text"
+                android:textAlignment="center" />
+        </LinearLayout>
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
