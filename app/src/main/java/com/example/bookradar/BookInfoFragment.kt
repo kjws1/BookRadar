@@ -6,8 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions.bitmapTransform
 import com.example.bookradar.databinding.FragmentBookInfoBinding
 import com.example.bookradar.model.DocumentModel
+import jp.wasabeef.glide.transformations.BlurTransformation
 
 @Suppress("DEPRECATION")
 class BookInfoFragment : Fragment() {
@@ -29,6 +31,10 @@ class BookInfoFragment : Fragment() {
         binding.textPublisher.text = item?.publisher
         binding.textIsbn.text = item?.isbn
         binding.textContent.text = item?.contents
+        Glide.with(this)
+            .load(item?.thumbnail)
+            .apply (bitmapTransform(BlurTransformation(25, 3)))
+            .into(binding.imageBookCoverBlur)
         Glide.with(this)
             .load(item?.thumbnail)
             .into(binding.imageBookCover)

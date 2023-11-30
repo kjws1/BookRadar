@@ -7,15 +7,32 @@
     tools:context=".BookInfoFragment">
 
     <ImageView
+        android:id="@+id/imageBookCoverBlur"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="15dp"
+        android:contentDescription="@string/image_book_cover_desc"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toTopOf="@+id/textBookTitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        tools:src="@tools:sample/avatars" />
+
+    <ImageView
         android:id="@+id/imageBookCover"
         android:layout_width="222dp"
         android:layout_height="181dp"
+        android:elevation="20dp"
         android:contentDescription="@string/image_book_cover_desc"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.04000002"
+        app:layout_constraintVertical_bias="0.029"
         tools:src="@tools:sample/avatars" />
 
     <TextView
@@ -35,7 +52,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageBookCover"
-        app:layout_constraintVertical_bias="0.068"
+        app:layout_constraintVertical_bias="0.050000012"
         tools:ignore="HardcodedText" />
 
     <LinearLayout
