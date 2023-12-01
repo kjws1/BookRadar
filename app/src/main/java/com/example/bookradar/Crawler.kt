@@ -11,8 +11,8 @@ import it.skrape.fetcher.skrape
 class Crawler {
 
     val libraries = listOf<Library>(DongyangLibrary())
-    suspend fun search(keyword: String): MutableList<BookInfo> {
-        return libraries[0].search(keyword)
+    suspend fun search(isbns: List<String>): MutableList<BookInfo> {
+        return libraries[0].search(isbns)
     }
 
     fun searchBook(keyword: String, context: Context) {

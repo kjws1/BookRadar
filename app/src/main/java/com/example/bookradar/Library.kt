@@ -3,6 +3,7 @@ package com.example.bookradar
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import com.example.bookradar.model.BookModel
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import it.skrape.core.htmlDocument
@@ -25,7 +26,7 @@ abstract class Library {
     abstract val books: MutableList<BookInfo>
     abstract val filename: String
 
-    abstract suspend fun search(title: String): MutableList<BookInfo>
+    abstract suspend fun search(isbns: List<String>): MutableList<BookInfo>
 
     protected fun saveBooksToJson(context: Context) {
         if (!filename.endsWith("json")) {
@@ -60,35 +61,31 @@ abstract class Library {
 }
 
 data class BookInfo(
-    var book: Book? = null,
-    var urlImage: String? = null,
-    var image: Bitmap? = null,
-    var availability: Boolean = false,
-    var loc: String = "",
-    var id: String = ""
+        var book: BookModel? = null,
+        var availability: Boolean = false,
+        var loc: String = "",
+        var id: String = ""
 )
 
 
 class DongyangLibrary : Library() {
     private val baseUrl = "https://lib.dongyang.ac.kr/"
     private val searchUrl =
-        "search/tot/result?st=KWRD&si=TOTAL&oi=DISP06&os=DESC&cpp=10&q="
+            "search/tot/result?st=FRNT&commandType=advanced&mId=&si=6&b0=and&weight0=&si=2&q=&b1=and&weight1=&si=3&q=&weight2=&lmt0=TOTAL&_lmt0=on&lmtsn=000000000001&lmtst=OR&_lmt0=on&_lmt0=on&_lmt0=on&_lmt0=on&inc=TOTAL&_inc=on&_inc=on&_inc=on&_inc=on&lmt1=TOTAL&lmtsn=000000000003&lmtst=OR&rf=&rt=&range=000000000021&cpp=10&msc=10000&q="
 
     override val name = "동양미래대학교 도서관"
     override val location = "GV29+26 Seoul"
     override val books = mutableListOf<BookInfo>()
     override val filename: String = "book_dongyang.json"
 
-    override suspend fun search(title: String): MutableList<BookInfo> {
-        val encodedTitle = withContext(Dispatchers.IO) {
-            URLEncoder.encode(title, StandardCharsets.UTF_8.toString())
-        }
-        val book = Book()
-        val bInfo = BookInfo()
+    override suspend fun search(isbns: List<String>): MutableList<BookInfo> {
+        val book = BookModel()
+        val bInfo = BookInfo(book)
         val books = mutableListOf<BookInfo>()
         val doc = skrape(BrowserFetcher) {
             request {
-                url = baseUrl + searchUrl + encodedTitle
+                // TODO: try every single isbn until it has any result, at the moment, only trying the first isbn
+                url = baseUrl + searchUrl + isbns[0]
             }
             response {
                 this
@@ -98,28 +95,6 @@ class DongyangLibrary : Library() {
             "#divContent > div > div.briefContent > div.result > form > fieldset > ul" {
                 findAll("li")
             }
-        }
-        for (el in bElements) {
-            bInfo.urlImage = el.findFirst("img").eachSrc[0]
-            val urlToImage: String? = bInfo.urlImage?.let { url ->
-                if(url.contains("http")) {
-                    url
-                } else {
-                    baseUrl + url
-                }
-            }
-            bInfo.image = urlToImage?.let { getBitmapFromUrl(it) }
-            book.title = el.findFirst("dd.title > a").text
-            book.author = el.findFirst("dd:nth-child(10)").text
-            book.publisher = el.findFirst("dd:nth-child(12)").text
-            bInfo.loc = el.findFirst("dd:nth-child(14)").text
-            book.year = el.findFirst("dd:nth-child(16)").text.toUInt()
-            bInfo.id = el.findFirst("a").eachHref[0].split("?")[0].split("/").last()
-            book.isbn = getIsbn(bInfo.id)
-            bInfo.book = book.copy()
-            bInfo.availability = el.findFirst(".availableBtn").classNames.contains("enabled")
-            books.add(bInfo.copy())
-            println(bInfo)
         }
         this@DongyangLibrary.books.addAll(books.toMutableList())
         return this@DongyangLibrary.books
@@ -143,10 +118,4 @@ class DongyangLibrary : Library() {
         }
         return null
     }
-}
-
-
-suspend fun main() {
-    val lib = DongyangLibrary()
-    lib.search("파이썬")
 }

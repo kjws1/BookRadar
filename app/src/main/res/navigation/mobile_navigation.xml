@@ -37,7 +37,7 @@
         tools:layout="@layout/fragment_book_info">
         <argument
             android:name="item"
-            app:argType="com.example.bookradar.model.DocumentModel"
+            app:argType="com.example.bookradar.model.BookModel"
             app:nullable="true"
             android:defaultValue="@null" />
     </fragment>
