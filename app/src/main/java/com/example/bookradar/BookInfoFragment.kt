@@ -31,6 +31,12 @@ class BookInfoFragment : Fragment() {
         binding.textPublisher.text = item?.publisher
         binding.textIsbn.text = item?.isbn
         binding.textContent.text = item?.contents
+        // implementation for fetching book info
+        binding.floatingActionButton.setOnClickListener {
+            val crawler = Crawler()
+
+
+        }
         Glide.with(this)
             .load(item?.thumbnail)
             .apply (bitmapTransform(BlurTransformation(25, 3)))
