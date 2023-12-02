@@ -137,7 +137,7 @@
                 android:layout_weight="1"
                 android:autofillHints=""
                 android:ems="10"
-                android:hint="@string/hint_book_title"
+                android:hint="@string/text_book_title"
                 android:inputType="text"
                 android:textAlignment="center" />
         </LinearLayout>
@@ -164,7 +164,7 @@
                 android:layout_weight="1"
                 android:autofillHints="libraryName"
                 android:ems="10"
-                android:hint="@string/hint_library"
+                android:hint="@string/text_library"
                 android:inputType="text"
                 android:textAlignment="center" />
         </LinearLayout>

@@ -127,9 +127,8 @@ class MemoAdapter(
         val binding = holder.binding
         val funcDuration = BorrowFragment()
         binding.run {
-            // TODO: Separate label and value in the layout
-            textTitle.text = "책제목: " + item["title"]
-            textLibrary.text = "도서관: " + item["library"]
+            textTitleValue.text = item["title"]
+            textLibraryValue.text = item["library"]
             textBorrow.text = item["borrow"]
             textDue.text = item["due"]
             val borrowDate = item["borrow"]?.let {
@@ -146,7 +145,7 @@ class MemoAdapter(
             }!!
             val duration = funcDuration.calculateDuration(borrowDate, dueDate)
 
-            textDuration.text = "기간: ${duration}일"
+            textDurationValue.text = duration.toString()
         }
     }
 
@@ -235,8 +234,6 @@ class BorrowFragment : Fragment() {
     }
 
     private fun addMemo(memo: Memo) {
-        val db = dbHelper?.writableDatabase
-
         val item = mutableMapOf<String, String>()
         itemID++
         item["id"] = itemID.toString()
@@ -256,17 +253,16 @@ class BorrowFragment : Fragment() {
     ): View.OnClickListener {
         return View.OnClickListener {
             val today = LocalDate.now()
-            var setDate: Calendar? = null
             DatePickerDialog(
                 requireContext(),
                 { _, year, month, dayOfMonth ->
-                    setDate = Calendar.getInstance()
-                    setDate?.set(year, month, dayOfMonth)
+                    val setDate = Calendar.getInstance()
+                    setDate.set(year, month, dayOfMonth)
 
                     targetView.text = LocalDate.of(
-                        setDate!!.get(Calendar.YEAR),
-                        setDate!!.get(Calendar.MONTH) + 1,
-                        setDate!!.get(Calendar.DAY_OF_MONTH)
+                        setDate.get(Calendar.YEAR),
+                        setDate.get(Calendar.MONTH) + 1,
+                        setDate.get(Calendar.DAY_OF_MONTH)
                     ).format(DateTimeFormatter.ISO_LOCAL_DATE)
 
                     // calculate duration and update number picker
@@ -368,8 +364,6 @@ class BorrowFragment : Fragment() {
     }
 
     fun editMemo(pos: Int, memo: Memo) {
-        val db = dbHelper?.writableDatabase
-
         adapter!!.datas[pos]["title"] = memo.title
         adapter!!.datas[pos]["library"] = memo.library
         adapter!!.datas[pos]["borrow"] = memo.borrow
