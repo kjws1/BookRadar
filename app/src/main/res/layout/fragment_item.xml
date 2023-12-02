@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/linearLayoutBookItem"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -16,9 +17,9 @@
 
             android:layout_marginHorizontal="20dp"
             android:layout_weight="1"
-            android:contentDescription="@string/image_book_cover_desc"
+            android:contentDescription="@string/book_cover_image"
 
-           />
+            />
 
         <LinearLayout
             android:layout_width="280dp"
@@ -31,7 +32,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Title"
-                android:textSize="13sp" />
+                android:textSize="13sp"
+                tools:ignore="HardcodedText" />
 
             <TextView
                 android:id="@+id/textPublisher"
@@ -39,7 +41,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Publisher"
-                android:textSize="13sp" />
+                android:textSize="13sp"
+                tools:ignore="HardcodedText" />
 
             <TextView
                 android:id="@+id/textAuthor"
@@ -47,7 +50,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Steve"
-                android:textSize="13sp" />
+                android:textSize="13sp"
+                tools:ignore="HardcodedText" />
 
             <TextView
                 android:id="@+id/textISBN"
@@ -55,7 +59,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="ISBN"
-                android:textSize="13sp" />
+                android:textSize="13sp"
+                tools:ignore="HardcodedText" />
 
 
         </LinearLayout>

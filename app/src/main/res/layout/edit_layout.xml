@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -20,6 +19,7 @@
                 android:layout_width="@dimen/edit_layout_text_width"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
+                android:labelFor="@id/editTextBorrowDate"
                 android:maxLines="1"
                 android:text="@string/text_borrowing_date"
                 android:textSize="13sp" />
@@ -40,7 +40,7 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:background="#00000000"
-                android:contentDescription="Borrow date selector"
+                android:contentDescription="@string/borrow_date_selector"
                 android:scaleType="fitCenter"
                 android:src="@drawable/calendar" />
 
@@ -58,6 +58,7 @@
                 android:layout_width="@dimen/edit_layout_text_width"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
+                android:labelFor="@id/editTextDueDate"
                 android:maxLines="1"
                 android:text="@string/due_date"
                 android:textSize="13sp" />
@@ -96,12 +97,13 @@
                 android:layout_width="@dimen/edit_layout_text_width"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
+                android:labelFor="@id/numberPickerDuration"
                 android:maxLines="1"
                 android:text="@string/text_duration"
                 android:textSize="13sp" />
 
             <NumberPicker
-                android:id="@+id/spinnerDuration"
+                android:id="@+id/numberPickerDuration"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -124,17 +126,18 @@
                 android:layout_width="@dimen/edit_layout_text_width"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
+                android:labelFor="@id/editTextBookTitle"
                 android:text="@string/text_book_title"
                 android:textSize="13sp" />
 
             <EditText
                 android:id="@+id/editTextBookTitle"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:autofillHints=""
                 android:ems="10"
-                android:hint="@string/hint_book_title"
+                android:hint="@string/text_book_title"
                 android:inputType="text"
                 android:textAlignment="center" />
         </LinearLayout>
@@ -150,6 +153,7 @@
                 android:layout_width="@dimen/edit_layout_text_width"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
+                android:labelFor="@id/editTextLibrary"
                 android:text="@string/text_library"
                 android:textSize="13sp" />
 
@@ -158,8 +162,9 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:autofillHints="libraryName"
                 android:ems="10"
-                android:hint="@string/hint_library"
+                android:hint="@string/text_library"
                 android:inputType="text"
                 android:textAlignment="center" />
         </LinearLayout>
