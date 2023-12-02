@@ -8,5 +8,5 @@
     <dimen name="text_margin">16dp</dimen>
     <dimen name="margin_top_property">9dp</dimen>
     <dimen name="edit_layout_height">60dp</dimen>
-    <dimen name="edit_layout_text_width">97dp</dimen>
+    <dimen name="edit_layout_text_width">100dp</dimen>
 </resources>

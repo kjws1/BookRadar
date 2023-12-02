@@ -29,4 +29,5 @@
     <string name="text_borrowing_date">Borrowing Date</string>
     <string name="borrow_date_selector">Borrowing date selector</string>
     <string name="due_date_selector">Due date selector</string>
+    <string name="manual_entry">Manual Entry</string>
 </resources>
