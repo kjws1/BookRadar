@@ -1,15 +1,22 @@
 package com.example.bookradar
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions.bitmapTransform
 import com.example.bookradar.databinding.FragmentBookInfoBinding
-import com.example.bookradar.model.DocumentModel
+import com.example.bookradar.model.BookModel
 import jp.wasabeef.glide.transformations.BlurTransformation
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Suppress("DEPRECATION")
 class BookInfoFragment : Fragment() {
@@ -23,17 +30,38 @@ class BookInfoFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val item = arguments?.getParcelable<DocumentModel>("item")
+    ): View {
+        val item = arguments?.getParcelable<BookModel>("item")
         binding.textBookTitle.text = item?.title
         binding.textAuthor.text =
             item?.authors?.joinToString(", ") ?: getString(R.string.unknown_author)
         binding.textPublisher.text = item?.publisher
         binding.textIsbn.text = item?.isbn
         binding.textContent.text = item?.contents
+        // implementation for fetching book info
+        binding.floatingActionButton.setOnClickListener {
+            val crawler = Crawler()
+            val isbns = binding.textIsbn.text.split(' ')
+            var bInfos: ArrayList<BookInfo>?
+            lifecycleScope.launch {
+                withContext(Dispatchers.IO) {
+                    bInfos = crawler.getBookInfos(isbns)?.let { it1 -> ArrayList(it1) }
+                    bInfos?.forEach {
+                        it.book = item
+                    }
+                }
+                if (bInfos != null) {
+                    val action = BookInfoFragmentDirections.actionNavBookInfoToNavMaps(bInfos!!.toTypedArray())
+                    findNavController().navigate(action)
+                } else {
+                    Toast.makeText(context, getString(R.string.no_book_found), Toast.LENGTH_SHORT).show()
+                    Log.d("BookInfoFragment", "No book found")
+                }
+            }
+        }
         Glide.with(this)
             .load(item?.thumbnail)
-            .apply (bitmapTransform(BlurTransformation(25, 3)))
+            .apply(bitmapTransform(BlurTransformation(25, 3)))
             .into(binding.imageBookCoverBlur)
         Glide.with(this)
             .load(item?.thumbnail)
@@ -45,7 +73,7 @@ class BookInfoFragment : Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(item: DocumentModel) = BookInfoFragment().apply {
+        fun newInstance(item: BookModel) = BookInfoFragment().apply {
             arguments = Bundle().apply {
                 putParcelable("item", item)
             }

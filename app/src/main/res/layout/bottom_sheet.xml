@@ -24,19 +24,13 @@
         android:textSize="16sp" />
 
     <TextView
-        android:id="@+id/textOpening"
+        android:id="@+id/textOpeningHours"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:textSize="16sp"
-        android:text="영업일" />
+        android:text="@string/opening_hours" />
 
-    <TextView
-        android:id="@+id/textAvailability"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:text="대출 가능 여부" />
 
     <android.widget.Button
         android:id="@+id/buttonBorrow"
@@ -46,6 +40,6 @@
         android:layout_gravity="center"
         android:background="#A0D5DC"
         android:textColor="@color/white"
-        android:text="빌리기" />
+        android:text="@string/borrow" />
 
 </LinearLayout>

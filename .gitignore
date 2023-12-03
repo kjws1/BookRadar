@@ -8,6 +8,7 @@
 /.idea/navEditor.xml
 /.idea/assetWizardSettings.xml
 /.idea/git_toolbox_prj.xml
+/.idea/codeStyles/*
 .DS_Store
 /build
 /captures

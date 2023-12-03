@@ -1,7 +1,5 @@
 package com.example.bookradar
 
-import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -15,7 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bookradar.databinding.FragmentHomeBinding
 import com.example.bookradar.model.BookListModel
-import com.example.bookradar.model.DocumentModel
+import com.example.bookradar.model.BookModel
 import com.example.bookradar.retrofit.RetrofitHelper
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -31,7 +29,7 @@ class HomeFragment : Fragment() {
 
     private lateinit var binding: FragmentHomeBinding
     private lateinit var recyclerView: RecyclerView
-    private lateinit var bookList: MutableList<DocumentModel>
+    private lateinit var bookList: MutableList<BookModel>
     var rootView: View? = null
 
     override fun onCreateView(
@@ -43,16 +41,13 @@ class HomeFragment : Fragment() {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         rootView = binding.root
 
-        apiKey = "KakaoAK " + requireContext().packageManager.getApplicationInfo(
-            requireContext().packageName,
-            PackageManager.GET_META_DATA
-        ).metaData.getString("kakao_api")!!
+        apiKey = "KakaoAK " + BuildConfig.KAKAO_API
         val searchBar = binding.searchBook
         recyclerView = binding.listBook
-        bookList = mutableListOf<DocumentModel>()
+        bookList = mutableListOf<BookModel>()
         adapter = MyBookRecyclerViewAdapter(bookList,
             object : MyBookRecyclerViewAdapter.OnItemClickListener {
-                override fun onItemClick(item: DocumentModel) {
+                override fun onItemClick(item: BookModel) {
                     val action = HomeFragmentDirections.actionNavHomeToNavBookInfo(item)
                     findNavController().navigate(action)
                 }
@@ -99,13 +94,6 @@ class HomeFragment : Fragment() {
             }
 
         })
-
-        binding.checkBox2.setOnClickListener{
-            activity?.let {
-                val intent = Intent(activity, MapActivity::class.java)  /// MapActivity로 화면 전환
-                startActivity(intent)
-            }
-        }
 
         /* val textView: TextView = binding.textHome
          homeViewModel.text.observe(viewLifecycleOwner) {

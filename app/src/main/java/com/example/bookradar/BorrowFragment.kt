@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.bookradar.databinding.BorrowedBookItemBinding
 import com.example.bookradar.databinding.EditLayoutBinding
 import com.example.bookradar.databinding.FragmentBorrowBinding
@@ -28,13 +29,15 @@ internal interface DBContract {
         private const val COL_LIBRARY = "LIBRARY"
         private const val COL_BORROWDATE = "BORROW"
         private const val COL_DUEDATE = "DUE"
+        private const val COL_IMAGE = "IMAGE"
         const val SQL_CREATE_TABLE = "CREATE TABLE IF NOT EXISTS " +
                 TABLE_NAME + "(" +
                 COL_ID + " INTEGER NOT NULL PRIMARY KEY, " +
                 COL_TITLE + " TEXT NOT NULL, " +
                 COL_LIBRARY + " TEXT NOT NULL, " +
                 COL_BORROWDATE + " TEXT NOT NULL, " +
-                COL_DUEDATE + " TEXT NOT NULL)"
+                COL_DUEDATE + " TEXT NOT NULL," +
+                COL_IMAGE + " TEXT NOT NULL" + ")"
         const val SQL_DROP_TABLE = "DROP TABLE IF EXISTS $TABLE_NAME"
         const val SQL_LOAD = "SELECT * FROM $TABLE_NAME"
 
@@ -46,6 +49,7 @@ internal interface DBContract {
                 put("library", memo.library)
                 put("borrow", memo.borrow)
                 put("due", memo.due)
+                put("image", memo.image)
             }
             db.insert(TABLE_NAME, null, value)
         }
@@ -57,6 +61,7 @@ internal interface DBContract {
                 put("library", memo.library)
                 put("borrow", memo.borrow)
                 put("due", memo.due)
+                put("image", memo.image)
             }
             db.update(
                 TABLE_NAME, value,
@@ -70,7 +75,8 @@ data class Memo(
     val title: String,
     val library: String,
     val borrow: String,
-    val due: String
+    val due: String,
+    var image: String = ""
 )
 
 internal class DBHelper(context: Context?) :
@@ -131,6 +137,11 @@ class MemoAdapter(
             textLibraryValue.text = item["library"]
             textBorrow.text = item["borrow"]
             textDue.text = item["due"]
+            if (item["image"] != null && item["image"]!!.isNotBlank()) {
+                Glide.with(fragment)
+                    .load(item["image"])
+                    .into(imageViewBookCover)
+            }
             val borrowDate = item["borrow"]?.let {
                 LocalDate.parse(
                     it,
@@ -167,7 +178,8 @@ class MemoAdapter(
                 datas[itemPos]["title"]!!,
                 datas[itemPos]["library"]!!,
                 datas[itemPos]["borrow"]!!,
-                datas[itemPos]["due"]!!
+                datas[itemPos]["due"]!!,
+                datas[itemPos]["image"]!!
             )
             fragment.showManualEntry({ m ->
                 fragment.editMemo(itemPos, m)
@@ -176,6 +188,7 @@ class MemoAdapter(
     }
 }
 
+@Suppress("DEPRECATION")
 class BorrowFragment : Fragment() {
     lateinit var binding: FragmentBorrowBinding
     private var adapter: MemoAdapter? = null
@@ -193,6 +206,21 @@ class BorrowFragment : Fragment() {
     ): View {
         binding = FragmentBorrowBinding.inflate(inflater, container, false)
 
+        val bInfo = arguments?.getParcelable<BookInfo>("item")
+        if (bInfo != null) {
+            val memo = Memo(
+                bInfo.book!!.title!!,
+                bInfo.library!!.getName(requireContext()),
+                LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE).toString(),
+                LocalDate.now().plusDays(7).format(DateTimeFormatter.ISO_LOCAL_DATE).toString(),
+                bInfo.book!!.thumbnail!!
+            )
+            showManualEntry({ m ->
+                addMemo(m)
+            }, memo)
+        }
+
+
         val dataList = mutableListOf<MutableMap<String, String>>()
 
         dbHelper = DBHelper(activity)
@@ -205,6 +233,7 @@ class BorrowFragment : Fragment() {
             item["library"] = cursor.getString(2)!!
             item["borrow"] = cursor.getString(3)!!
             item["due"] = cursor.getString(4)!!
+            item["image"] = cursor.getString(5)!!
             dataList.add(item)
             itemID = cursor.getInt(0)
         }
@@ -241,6 +270,7 @@ class BorrowFragment : Fragment() {
         item["library"] = memo.library
         item["borrow"] = memo.borrow
         item["due"] = memo.due
+        item["image"] = memo.image
         adapter!!.datas.add(item)
         adapter!!.notifyItemChanged(itemID)
 
@@ -350,7 +380,7 @@ class BorrowFragment : Fragment() {
                 val library = eBinding.editTextLibrary.text.toString()
                 val borrow = eBinding.editTextBorrowDate.text.toString()
                 val due = eBinding.editTextDueDate.text.toString()
-                callback(Memo(title, library, borrow, due))
+                callback(Memo(title, library, borrow, due, memo?.image ?: ""))
             }
             setNegativeButton("Cancel", null)
             show()

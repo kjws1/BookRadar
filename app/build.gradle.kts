@@ -1,15 +1,18 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("kotlin-parcelize")
     id("androidx.navigation.safeargs.kotlin")
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
 
 android {
     namespace = "com.example.bookradar"
     compileSdk = 34
 
-    packaging{
+    packaging {
         resources.excludes.add("META-INF/AL2.0")
         resources.excludes.add("META-INF/LGPL2.1")
         resources.excludes.add("org/apache/xml/serialize/HTMLEntities.res")
@@ -30,6 +33,10 @@ android {
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        val properties = Properties()
+        properties.load(project.rootProject.file("local.properties").inputStream())
+        buildConfigField("String", "KAKAO_API", "\"${properties.getProperty("KAKAO_API")}\"")
     }
 
     buildTypes {
@@ -54,6 +61,7 @@ android {
     }
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
     buildToolsVersion = "34.0.0"
 }
@@ -78,6 +86,7 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.github.bumptech.glide:glide:4.13.2")
     implementation("jp.wasabeef:glide-transformations:4.3.0")
+    implementation("androidx.compose.material3:material3:1.1.2")
     annotationProcessor("com.github.bumptech.glide:compiler:4.13.2")
 
     implementation("com.google.android.gms:play-services-maps:18.0.2")//구글 지도를 위한 라이브러리 추가
