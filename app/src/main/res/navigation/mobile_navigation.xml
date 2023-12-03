@@ -9,7 +9,7 @@
         android:id="@+id/nav_home"
         android:name="com.example.bookradar.HomeFragment"
         android:label="@string/menu_home"
-        tools:layout="@layout/fragment_home" >
+        tools:layout="@layout/fragment_home">
         <action
             android:id="@+id/action_nav_home_to_nav_book_info"
             app:destination="@id/nav_book_info"
@@ -20,16 +20,29 @@
 
             />
     </fragment>
-
-    <fragment
-        android:id="@+id/nav_settings"
-        android:name="com.example.bookradar.ui.slideshow.SlideshowFragment"
-        android:label="@string/menu_settings"
-        tools:layout="@layout/fragment_slideshow" />
     <fragment
         android:id="@+id/nav_borrow"
         android:name="com.example.bookradar.BorrowFragment"
-        android:label="BorrowFragment" />
+        android:label="BorrowFragment"
+        tools:layout="@layout/fragment_borrow">
+        <argument
+            android:name="item"
+            android:defaultValue="@null"
+            app:argType="com.example.bookradar.BookInfo"
+            app:nullable="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_maps"
+        android:name="com.example.bookradar.MapsFragment"
+        android:label="MapsFragment"
+        tools:layout="@layout/fragment_maps">
+        <action
+            android:id="@+id/action_nav_maps_to_nav_borrow"
+            app:destination="@id/nav_borrow" />
+        <argument
+            android:name="books"
+            app:argType="com.example.bookradar.BookInfo[]"/>
+    </fragment>
     <fragment
         android:id="@+id/nav_book_info"
         android:name="com.example.bookradar.BookInfoFragment"
@@ -37,9 +50,12 @@
         tools:layout="@layout/fragment_book_info">
         <argument
             android:name="item"
+            android:defaultValue="@null"
             app:argType="com.example.bookradar.model.BookModel"
-            app:nullable="true"
-            android:defaultValue="@null" />
+            app:nullable="true" />
+        <action
+            android:id="@+id/action_nav_book_info_to_nav_maps"
+            app:destination="@id/nav_maps" />
     </fragment>
 
 

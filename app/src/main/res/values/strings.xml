@@ -30,4 +30,8 @@
     <string name="manual_entry">Manual Entry</string>
     <string name="delete_button">Delete button</string>
     <string name="text_title">Title</string>
+    <string name="borrow">Borrow</string>
+    <string name="opening_hours">Opening hours</string>
+    <string name="dongyang_library">DongyangMirae Library</string>
+    <string name="no_book_found">No book found</string>
 </resources>

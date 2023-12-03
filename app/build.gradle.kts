@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("kotlin-parcelize")
     id("androidx.navigation.safeargs.kotlin")
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
 
 android {
@@ -78,6 +79,7 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.github.bumptech.glide:glide:4.13.2")
     implementation("jp.wasabeef:glide-transformations:4.3.0")
+    implementation("androidx.compose.material3:material3:1.1.2")
     annotationProcessor("com.github.bumptech.glide:compiler:4.13.2")
 
     implementation("com.google.android.gms:play-services-maps:18.0.2")//구글 지도를 위한 라이브러리 추가
