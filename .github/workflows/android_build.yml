@@ -17,6 +17,10 @@ jobs:
         with:
           java-version: 17
 
+      - name: Set API Keys
+        run: |
+          echo "KAKAO_API=${{secrets.KAKAO_API}}" >> local.properties
+
       - name: Gradle Test
         run: ./gradlew test
 

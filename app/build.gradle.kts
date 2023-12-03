@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -10,7 +12,7 @@ android {
     namespace = "com.example.bookradar"
     compileSdk = 34
 
-    packaging{
+    packaging {
         resources.excludes.add("META-INF/AL2.0")
         resources.excludes.add("META-INF/LGPL2.1")
         resources.excludes.add("org/apache/xml/serialize/HTMLEntities.res")
@@ -31,6 +33,10 @@ android {
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        val properties = Properties()
+        properties.load(project.rootProject.file("local.properties").inputStream())
+        buildConfigField("String", "KAKAO_API", "\"${properties.getProperty("KAKAO_API")}\"")
     }
 
     buildTypes {
@@ -55,6 +61,7 @@ android {
     }
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
     buildToolsVersion = "34.0.0"
 }

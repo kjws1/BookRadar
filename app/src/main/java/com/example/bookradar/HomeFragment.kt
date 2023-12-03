@@ -1,6 +1,5 @@
 package com.example.bookradar
 
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -42,10 +41,7 @@ class HomeFragment : Fragment() {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         rootView = binding.root
 
-        apiKey = "KakaoAK " + requireContext().packageManager.getApplicationInfo(
-            requireContext().packageName,
-            PackageManager.GET_META_DATA
-        ).metaData.getString("kakao_api")!!
+        apiKey = "KakaoAK " + BuildConfig.KAKAO_API
         val searchBar = binding.searchBook
         recyclerView = binding.listBook
         bookList = mutableListOf<BookModel>()

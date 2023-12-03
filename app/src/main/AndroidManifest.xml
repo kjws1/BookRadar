@@ -19,10 +19,6 @@
         tools:targetApi="31">
 
         <meta-data
-            android:name="kakao_api"
-            android:value="323b975e45a8758e609fd7d27da046e3" />
-
-        <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyAXoNv8ZpKHP39EPCsssu9vxTZ7ETbR_B8" />
 
