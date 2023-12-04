@@ -9,4 +9,4 @@
 
 ## 참고
 
-- [Git/Github 사용법](git_github.md)
+- [Git/Github 사용법](./git_github.md)
