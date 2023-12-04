@@ -82,6 +82,7 @@ class ModalBottomSheet : BottomSheetDialogFragment() {
             MapsFragmentDirections.actionNavMapsToNavBorrow(book).let {
                 (requireActivity() as AppCompatActivity).supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main)!!
                     .findNavController().navigate(it)
+                dismiss()
             }
         }
         return binding.root
