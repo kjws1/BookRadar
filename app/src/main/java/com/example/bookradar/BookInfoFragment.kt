@@ -1,5 +1,6 @@
 package com.example.bookradar
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -15,6 +16,7 @@ import com.example.bookradar.databinding.FragmentBookInfoBinding
 import com.example.bookradar.model.BookModel
 import jp.wasabeef.glide.transformations.BlurTransformation
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -40,10 +42,24 @@ class BookInfoFragment : Fragment() {
         binding.textContent.text = item?.contents
         // implementation for fetching book info
         binding.floatingActionButton.setOnClickListener {
+            var jobSearchBook: Job? = null
+            val loadingDialog = AlertDialog.Builder(activity).run {
+                setView(R.layout.loading_dialog)
+                setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
+                    jobSearchBook?.cancel()
+                    dialog.dismiss()
+                    Toast.makeText(context, getString(R.string.search_canceled), Toast.LENGTH_SHORT)
+                        .show()
+                }
+                setCancelable(false)
+                create()
+            }
+            loadingDialog.show()
+
             val crawler = Crawler()
             val isbns = binding.textIsbn.text.split(' ')
             var bInfos: ArrayList<BookInfo>?
-            lifecycleScope.launch {
+            jobSearchBook = lifecycleScope.launch {
                 withContext(Dispatchers.IO) {
                     bInfos = crawler.getBookInfos(isbns)?.let { it1 -> ArrayList(it1) }
                     bInfos?.forEach {
@@ -51,12 +67,15 @@ class BookInfoFragment : Fragment() {
                     }
                 }
                 if (bInfos != null) {
-                    val action = BookInfoFragmentDirections.actionNavBookInfoToNavMaps(bInfos!!.toTypedArray())
+                    val action =
+                        BookInfoFragmentDirections.actionNavBookInfoToNavMaps(bInfos!!.toTypedArray())
                     findNavController().navigate(action)
                 } else {
-                    Toast.makeText(context, getString(R.string.no_book_found), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, getString(R.string.no_book_found), Toast.LENGTH_SHORT)
+                        .show()
                     Log.d("BookInfoFragment", "No book found")
                 }
+                loadingDialog.dismiss()
             }
         }
         Glide.with(this)
@@ -71,13 +90,4 @@ class BookInfoFragment : Fragment() {
         return binding.root
     }
 
-    companion object {
-        @JvmStatic
-        fun newInstance(item: BookModel) = BookInfoFragment().apply {
-            arguments = Bundle().apply {
-                putParcelable("item", item)
-            }
-        }
-
-    }
 }
