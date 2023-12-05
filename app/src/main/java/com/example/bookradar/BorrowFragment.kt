@@ -10,7 +10,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import android.widget.EditText
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -195,11 +196,6 @@ class BorrowFragment : Fragment() {
     private var itemID: Int = 0
     private var dbHelper: DBHelper? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -279,7 +275,7 @@ class BorrowFragment : Fragment() {
 
     private fun calendarClickListener(
         eBinding: EditLayoutBinding,
-        targetView: TextView
+        targetView: EditText
     ): View.OnClickListener {
         return View.OnClickListener {
             val today = LocalDate.now()
@@ -289,11 +285,56 @@ class BorrowFragment : Fragment() {
                     val setDate = Calendar.getInstance()
                     setDate.set(year, month, dayOfMonth)
 
-                    targetView.text = LocalDate.of(
-                        setDate.get(Calendar.YEAR),
-                        setDate.get(Calendar.MONTH) + 1,
-                        setDate.get(Calendar.DAY_OF_MONTH)
-                    ).format(DateTimeFormatter.ISO_LOCAL_DATE)
+                    // check if target view is borrow date or due date and if it's borrow date, check if it's after due date, and if it's due date, check if it's before borrow date
+                    if (targetView == eBinding.editTextBorrowDate) {
+                        val dueDate = LocalDate.parse(
+                            eBinding.editTextDueDate.text,
+                            DateTimeFormatter.ISO_LOCAL_DATE
+                        )
+                        if (dueDate.isBefore(
+                                LocalDate.of(
+                                    setDate.get(Calendar.YEAR),
+                                    setDate.get(Calendar.MONTH) + 1,
+                                    setDate.get(Calendar.DAY_OF_MONTH)
+                                )
+                            )
+                        ) {
+                            Toast.makeText(
+                                activity,
+                                getString(R.string.error_due_date_before_borrow_date),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            return@DatePickerDialog
+                        }
+                    } else if (targetView == eBinding.editTextDueDate) {
+                        val borrowDate = LocalDate.parse(
+                            eBinding.editTextBorrowDate.text,
+                            DateTimeFormatter.ISO_LOCAL_DATE
+                        )
+                        if (borrowDate.isAfter(
+                                LocalDate.of(
+                                    setDate.get(Calendar.YEAR),
+                                    setDate.get(Calendar.MONTH) + 1,
+                                    setDate.get(Calendar.DAY_OF_MONTH)
+                                )
+                            )
+                        ) {
+                            Toast.makeText(
+                                activity,
+                                getString(R.string.error_borrow_date_after_due_date),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            return@DatePickerDialog
+                        }
+                    }
+
+                    targetView.setText(
+                        LocalDate.of(
+                            setDate.get(Calendar.YEAR),
+                            setDate.get(Calendar.MONTH) + 1,
+                            setDate.get(Calendar.DAY_OF_MONTH)
+                        ).format(DateTimeFormatter.ISO_LOCAL_DATE)
+                    )
 
                     // calculate duration and update number picker
                     if (eBinding.editTextDueDate.text.isNotEmpty() && eBinding.editTextBorrowDate.text.isNotEmpty()) {
@@ -309,7 +350,7 @@ class BorrowFragment : Fragment() {
                         val duration = calculateDuration(borrowDate, dueDate)
                         eBinding.numberPickerDuration.value = duration.toInt()
                     }
-                }, today.year, today.monthValue, today.dayOfMonth
+                }, today.year, today.monthValue - 1, today.dayOfMonth
             ).show()
 
         }
