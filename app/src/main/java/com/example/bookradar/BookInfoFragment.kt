@@ -90,13 +90,4 @@ class BookInfoFragment : Fragment() {
         return binding.root
     }
 
-    companion object {
-        @JvmStatic
-        fun newInstance(item: BookModel) = BookInfoFragment().apply {
-            arguments = Bundle().apply {
-                putParcelable("item", item)
-            }
-        }
-
-    }
 }
