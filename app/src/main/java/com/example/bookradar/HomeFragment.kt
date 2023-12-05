@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -59,6 +60,10 @@ class HomeFragment : Fragment() {
         var job: Job? = null
         searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
+                if (query.isBlank()) {
+                    Toast.makeText(context, getString(R.string.error_empty_search_field), Toast.LENGTH_SHORT)
+                        .show()
+                }
                 val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
                     throwable.printStackTrace()
                 }

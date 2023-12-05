@@ -1,7 +1,5 @@
 <resources>
     <string name="app_name">Book Radar</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Info</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
@@ -22,7 +20,6 @@
     <string name="text_library">Library</string>
     <string name="text_book_title">Book Title</string>
     <string name="text_duration">Duration</string>
-    <string name="hint_duration">Borrowing duration</string>
     <string name="due_date">Due Date</string>
     <string name="text_borrowing_date">Borrowing Date</string>
     <string name="borrow_date_selector">Borrowing date selector</string>
