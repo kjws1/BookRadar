@@ -10,14 +10,16 @@ import it.skrape.fetcher.response
 import it.skrape.fetcher.skrape
 import it.skrape.selects.ElementNotFoundException
 import kotlinx.parcelize.Parcelize
+import java.time.LocalTime
 
 abstract class Library : Parcelable {
     abstract val nameResId: Int
     abstract val location: LatLng
     abstract val books: MutableList<BookInfo>
+    abstract val openingHour: OpeningHour
 
     abstract suspend fun search(isbns: List<String>): BookInfo?
-    abstract fun getName(context: Context):String
+    abstract fun getName(context: Context): String
 }
 
 @Parcelize
@@ -29,18 +31,26 @@ data class BookInfo(
     var id: String = ""
 ) : Parcelable
 
+@Parcelize
+data class OpeningHour(
+    val open: LocalTime,
+    val close: LocalTime
+) : Parcelable
+
 
 @Parcelize
 class DongyangLibrary(
     private val baseUrl: String = "https://lib.dongyang.ac.kr",
     private val searchUrl: String = "/search/tot/result?st=FRNT&commandType=advanced&mId=&si=6&q=",
+    override val openingHour: OpeningHour = OpeningHour(LocalTime.of(8, 0), LocalTime.of(22, 0)),
     override val nameResId: Int = R.string.dongyang_library,
     override val location: LatLng = LatLng(37.500062, 126.868063),
     override val books: MutableList<BookInfo> = mutableListOf()
 ) : Library() {
-    override fun getName(context: Context):String {
+    override fun getName(context: Context): String {
         return context.getString(nameResId)
     }
+
     override suspend fun search(isbns: List<String>): BookInfo? {
         val book = BookModel()
         val bInfo = BookInfo(this, book)

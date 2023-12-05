@@ -17,6 +17,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import java.time.format.DateTimeFormatter
 
 @Suppress("DEPRECATION")
 class MapsFragment : Fragment(), GoogleMap.OnMarkerClickListener {
@@ -77,7 +78,9 @@ class ModalBottomSheet : BottomSheetDialogFragment() {
     ): View {
         binding = BottomSheetBinding.inflate(inflater, container, false)
         binding.textLibraryName.text = book.library!!.getName(requireContext())
-        binding.textLibraryLocation.text = book.loc
+        binding.textBookLocation.text = book.loc
+        binding.textOpeningHours.text = book.library!!.openingHour.run{ open.format(
+            DateTimeFormatter.ofPattern("HH:mm")) + " ~ " + close.format(DateTimeFormatter.ofPattern("HH:mm")) }
         binding.buttonBorrow.setOnClickListener {
             MapsFragmentDirections.actionNavMapsToNavBorrow(book).let {
                 (requireActivity() as AppCompatActivity).supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main)!!

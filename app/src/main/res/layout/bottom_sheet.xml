@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -12,34 +13,80 @@
         android:layout_marginBottom="16dp"
         android:text="도서관"
         android:textColor="@android:color/black"
-        android:textSize="24sp" />
+        android:textSize="24sp"
+        tools:ignore="HardcodedText" />
 
-    <TextView
-        android:id="@+id/textLibraryLocation"
+    <TableLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:text="도서관 주소"
-        android:textColor="@android:color/black"
-        android:textSize="16sp" />
+        android:layout_marginBottom="10dp"
+        android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/textOpeningHours"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:textSize="16sp"
-        android:text="@string/opening_hours" />
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_marginVertical="5dp"
+            android:layout_height="match_parent" >
+
+            <TextView
+                android:id="@+id/textLabelBookLocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/label"
+                android:paddingEnd="10dp"
+                android:layout_marginEnd="10dp"
+                android:labelFor="@id/textBookLocation"
+                android:text="@string/book_location"
+                android:textColor="@android:color/black"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/textBookLocation"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="@string/book_location"
+                android:textColor="@android:color/black"
+                android:textSize="16sp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_marginVertical="5dp"
+            android:layout_height="match_parent" >
+
+            <TextView
+                android:id="@+id/textLabelOpeningHours"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/label"
+                android:labelFor="@id/textOpeningHours"
+                android:paddingEnd="10dp"
+                android:layout_marginEnd="10dp"
+                android:text="@string/opening_hours"
+                android:textColor="@color/black"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/textOpeningHours"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="@string/opening_hours"
+                android:textColor="@color/black"
+                android:textSize="16sp" />
+        </TableRow>
+
+    </TableLayout>
 
 
     <android.widget.Button
         android:id="@+id/buttonBorrow"
         android:layout_width="120dp"
         android:layout_height="wrap_content"
-        android:textSize="24sp"
         android:layout_gravity="center"
-        android:background="#A0D5DC"
+        android:background="#1F6C76"
+        android:text="@string/borrow"
         android:textColor="@color/white"
-        android:text="@string/borrow" />
+        android:textSize="20sp" />
 
 </LinearLayout>
