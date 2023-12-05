@@ -169,7 +169,7 @@ class MemoAdapter(
         if (itemPos != -1) {
             fragment.delMemo(datas[itemPos]["id"]!!.toInt())
             datas.removeAt(itemPos)
-            notifyItemRemoved(itemPos)
+            notifyDataSetChanged()
         }
     }
 
