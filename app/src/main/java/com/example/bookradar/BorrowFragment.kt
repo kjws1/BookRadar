@@ -286,7 +286,7 @@ class BorrowFragment : Fragment() {
                     setDate.set(year, month, dayOfMonth)
 
                     // check if target view is borrow date or due date and if it's borrow date, check if it's after due date, and if it's due date, check if it's before borrow date
-                    if (targetView == eBinding.editTextBorrowDate) {
+                    if (targetView == eBinding.editBorrowDate) {
                         val dueDate = LocalDate.parse(
                             eBinding.editTextDueDate.text,
                             DateTimeFormatter.ISO_LOCAL_DATE
@@ -308,7 +308,7 @@ class BorrowFragment : Fragment() {
                         }
                     } else if (targetView == eBinding.editTextDueDate) {
                         val borrowDate = LocalDate.parse(
-                            eBinding.editTextBorrowDate.text,
+                            eBinding.editBorrowDate.text,
                             DateTimeFormatter.ISO_LOCAL_DATE
                         )
                         if (borrowDate.isAfter(
@@ -337,9 +337,9 @@ class BorrowFragment : Fragment() {
                     )
 
                     // calculate duration and update number picker
-                    if (eBinding.editTextDueDate.text.isNotEmpty() && eBinding.editTextBorrowDate.text.isNotEmpty()) {
+                    if (eBinding.editTextDueDate.text.isNotEmpty() && eBinding.editBorrowDate.text.isNotEmpty()) {
                         val borrowDate = LocalDate.parse(
-                            eBinding.editTextBorrowDate.text,
+                            eBinding.editBorrowDate.text,
                             DateTimeFormatter.ISO_LOCAL_DATE
                         )
                         val dueDate =
@@ -371,7 +371,7 @@ class BorrowFragment : Fragment() {
 
                 setOnValueChangedListener { _, _, newVal ->
                     val borrowDate = LocalDate.parse(
-                        editTextBorrowDate.text,
+                        editBorrowDate.text,
                         DateTimeFormatter.ISO_LOCAL_DATE
                     )
                     val dueDate = borrowDate.plusDays(newVal.toLong())
@@ -381,7 +381,7 @@ class BorrowFragment : Fragment() {
             imageButtonCalendarBorrowDate.setOnClickListener(
                 calendarClickListener(
                     this,
-                    editTextBorrowDate
+                    editBorrowDate
                 )
             )
             imageButtonCalendarDueDate.setOnClickListener(
@@ -394,8 +394,8 @@ class BorrowFragment : Fragment() {
             // use provided values if exists
             if (memo != null) {
                 editTextBookTitle.setText(memo.title)
-                editTextLibrary.setText(memo.library)
-                editTextBorrowDate.setText(memo.borrow)
+                editLibrary.setText(memo.library)
+                editBorrowDate.setText(memo.borrow)
                 editTextDueDate.setText(memo.due)
                 numberPickerDuration.value = calculateDuration(
                     LocalDate.parse(memo.borrow, DateTimeFormatter.ISO_LOCAL_DATE),
@@ -403,7 +403,7 @@ class BorrowFragment : Fragment() {
                 ).toInt()
             } else {
                 // set the default date of due date to today
-                editTextBorrowDate.setText(
+                editBorrowDate.setText(
                     LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE).toString()
                 )
                 editTextDueDate.setText(
@@ -418,8 +418,8 @@ class BorrowFragment : Fragment() {
             setView(eBinding.root)
             setPositiveButton("Ok") { _, _ ->
                 val title = eBinding.editTextBookTitle.text.toString()
-                val library = eBinding.editTextLibrary.text.toString()
-                val borrow = eBinding.editTextBorrowDate.text.toString()
+                val library = eBinding.editLibrary.text.toString()
+                val borrow = eBinding.editBorrowDate.text.toString()
                 val due = eBinding.editTextDueDate.text.toString()
                 callback(Memo(title, library, borrow, due, memo?.image ?: ""))
             }

@@ -15,17 +15,17 @@
             android:paddingHorizontal="20dp">
 
             <TextView
-                android:id="@+id/textViewBorrowDate"
+                android:id="@+id/textBorrowDate"
                 android:layout_width="@dimen/edit_layout_text_width"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
-                android:labelFor="@id/editTextBorrowDate"
+                android:labelFor="@id/editBorrowDate"
                 android:maxLines="1"
                 android:text="@string/text_borrowing_date"
                 android:textSize="13sp" />
 
             <EditText
-                android:id="@+id/editTextBorrowDate"
+                android:id="@+id/editBorrowDate"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -54,7 +54,7 @@
             android:paddingHorizontal="20dp">
 
             <TextView
-                android:id="@+id/textViewDueDate"
+                android:id="@+id/textDueDate"
                 android:layout_width="@dimen/edit_layout_text_width"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
@@ -93,7 +93,7 @@
             android:paddingHorizontal="20dp">
 
             <TextView
-                android:id="@+id/textViewDuration"
+                android:id="@+id/textDuration"
                 android:layout_width="@dimen/edit_layout_text_width"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
@@ -108,10 +108,11 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
 
+
                 android:fadeScrollbars="true"
                 android:longClickable="false"
                 android:pointerIcon="handwriting"
-                android:theme="@style/NumberPickterText" />
+                android:theme="@style/NumberPickerText" />
 
         </LinearLayout>
 
@@ -149,16 +150,16 @@
             android:paddingHorizontal="20dp">
 
             <TextView
-                android:id="@+id/textViewLibrary"
+                android:id="@+id/textLibrary"
                 android:layout_width="@dimen/edit_layout_text_width"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
-                android:labelFor="@id/editTextLibrary"
+                android:labelFor="@id/editLibrary"
                 android:text="@string/text_library"
                 android:textSize="13sp" />
 
             <EditText
-                android:id="@+id/editTextLibrary"
+                android:id="@+id/editLibrary"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
