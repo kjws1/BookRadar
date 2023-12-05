@@ -34,4 +34,7 @@
     <string name="opening_hours">Opening hours</string>
     <string name="dongyang_library">DongyangMirae Library</string>
     <string name="no_book_found">No book found</string>
+    <string name="loading">Loading…</string>
+    <string name="cancel">Cancel</string>
+    <string name="search_canceled">Stopped the radar</string>
 </resources>
