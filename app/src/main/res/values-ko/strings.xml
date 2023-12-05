@@ -28,7 +28,7 @@
     <string name="dongyang_library">동양미래대학교 도서관</string>
     <string name="no_book_found">책을 찾지 못 했습니다</string>
     <string name="book_location">책 위치</string>
-    <string name="loading">불러오는 중…</string>
+    <string name="loading">찾는중…</string>
     <string name="cancel">취소</string>
     <string name="search_canceled">레이더를 멈췄습니다</string>
     <string name="error_due_date_before_borrow_date">반납일은 대출일보다 빠를 수 없습니다</string>

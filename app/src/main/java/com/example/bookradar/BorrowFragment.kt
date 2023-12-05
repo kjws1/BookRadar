@@ -278,7 +278,13 @@ class BorrowFragment : Fragment() {
         targetView: EditText
     ): View.OnClickListener {
         return View.OnClickListener {
-            val today = LocalDate.now()
+            var defaultDate = LocalDate.now()
+            if (targetView.text.isNotBlank()) {
+                defaultDate = LocalDate.parse(
+                    targetView.text,
+                    DateTimeFormatter.ISO_LOCAL_DATE
+                )
+            }
             DatePickerDialog(
                 requireContext(),
                 { _, year, month, dayOfMonth ->
@@ -350,7 +356,7 @@ class BorrowFragment : Fragment() {
                         val duration = calculateDuration(borrowDate, dueDate)
                         eBinding.numberPickerDuration.value = duration.toInt()
                     }
-                }, today.year, today.monthValue - 1, today.dayOfMonth
+                }, defaultDate.year, defaultDate.monthValue - 1, defaultDate.dayOfMonth
             ).show()
 
         }
@@ -366,7 +372,7 @@ class BorrowFragment : Fragment() {
             // configure duration number picker
             numberPickerDuration.run {
                 // min and max value of duration
-                minValue = 1
+                minValue = 0
                 maxValue = 100
 
                 setOnValueChangedListener { _, _, newVal ->

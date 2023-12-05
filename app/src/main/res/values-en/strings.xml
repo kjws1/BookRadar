@@ -30,7 +30,7 @@
     <string name="error_due_date_before_borrow_date">Due date can\'t be earlier than borrowing date</string>
     <string name="error_borrow_date_after_due_date">Borrowing date can\'t be later than due date</string>
     <string name="book_location">Book Location</string>
-    <string name="loading">Loading…</string>
+    <string name="loading">Searching…</string>
     <string name="cancel">Cancel</string>
     <string name="search_canceled">Stopped the radar</string>
 </resources>
