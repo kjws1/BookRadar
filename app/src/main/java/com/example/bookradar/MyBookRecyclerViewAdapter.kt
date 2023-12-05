@@ -7,13 +7,9 @@ import com.bumptech.glide.Glide
 import com.example.bookradar.databinding.FragmentItemBinding
 import com.example.bookradar.model.BookModel
 
-public interface OnItemClickListener {
-    fun onItemClick(item: BookModel)
-}
-
 class MyBookRecyclerViewAdapter(
-        private var values: MutableList<BookModel>?,
-        private val listener: OnItemClickListener
+    private var values: MutableList<BookModel>?,
+    private val listener: OnItemClickListener
 ) : RecyclerView.Adapter<MyBookRecyclerViewAdapter.ViewHolder>() {
 
 
@@ -54,8 +50,7 @@ class MyBookRecyclerViewAdapter(
         fun onItemClick(item: BookModel)
     }
 
-    inner class ViewHolder(binding: FragmentItemBinding) : RecyclerView.ViewHolder(binding.root)
-        {
+    inner class ViewHolder(binding: FragmentItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
         val titleView = binding.textTitle
         val authorView = binding.textAuthor

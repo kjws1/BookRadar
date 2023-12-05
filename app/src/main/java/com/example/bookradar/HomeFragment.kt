@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -73,6 +74,16 @@ class HomeFragment : Fragment() {
                         var page = 1
                         while (response == null || response.meta.is_end.not()) {
                             response = RetrofitHelper.getInstance().getBooks(apiKey, query, page++)
+                            if (response.meta.total_count == 0) {
+                                withContext(Dispatchers.Main) {
+                                    Toast.makeText(
+                                        context,
+                                        getString(R.string.no_book_found),
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                                break
+                            }
                             bookList.addAll(response.documents)
                             withContext(Dispatchers.Main) {
                                 adapter.notifyItemRangeChanged(prevSize, bookList.size)
