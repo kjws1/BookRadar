@@ -1,143 +1,167 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".BookInfoFragment">
+    android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/imageBookCoverBlur"
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginBottom="15dp"
-        android:contentDescription="@string/book_cover_image"
-        android:scaleType="centerCrop"
-        app:layout_constraintBottom_toTopOf="@+id/textBookTitle"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        tools:src="@tools:sample/avatars" />
+        android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/imageBookCover"
-        android:layout_width="222dp"
-        android:layout_height="181dp"
-        android:elevation="20dp"
-        android:contentDescription="@string/book_cover_image"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.029"
-        tools:src="@tools:sample/avatars" />
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            app:contentScrim="@color/material_dynamic_primary20"
+            app:layout_scrollFlags="scroll">
 
-    <TextView
-        android:id="@+id/textBookTitle"
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/imageBookCoverBlur"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:contentDescription="@string/book_cover_image"
+                    android:scaleType="centerCrop"
+                    app:layout_constraintBottom_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.0"
+                    tools:src="@tools:sample/avatars" />
+
+                <ImageView
+                    android:id="@+id/imageBookCover"
+                    android:layout_width="222dp"
+                    android:layout_height="181dp"
+                    android:contentDescription="@string/book_cover_image"
+                    android:elevation="20dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:src="@tools:sample/avatars" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="30dp"
-        android:background="@drawable/rounded_corner"
-        android:elevation="5dp"
-        android:gravity="center"
-        android:paddingVertical="8dp"
-        android:text="미움받을 용기"
-        android:textColor="@color/black"
-        android:textSize="25sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageBookCover"
-        app:layout_constraintVertical_bias="0.050000012"
-        tools:ignore="HardcodedText" />
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="15dp"
-        android:elevation="5dp"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textBookTitle"
-        app:layout_constraintVertical_bias="1.0">
-
-        <TextView
-            android:id="@+id/textAuthor"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="@dimen/margin_top_property"
-            android:background="@drawable/rounded_corner"
+            android:layout_marginTop="15dp"
             android:elevation="5dp"
-            android:paddingHorizontal="10dp"
-            android:paddingVertical="5dp"
-            android:text="김민주"
-            android:textSize="15sp"
-            tools:ignore="HardcodedText" />
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/textPublisher"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="@dimen/margin_top_property"
-            android:background="@drawable/rounded_corner"
-            android:elevation="5dp"
-            android:paddingHorizontal="10dp"
-            android:paddingVertical="5dp"
-            android:text="O'Reilly"
-            android:textSize="15sp"
-            tools:ignore="HardcodedText" />
+            <TextView
+                android:id="@+id/textBookTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="30dp"
+                android:background="@drawable/rounded_corner"
+                android:elevation="5dp"
+                android:gravity="center"
+                android:paddingVertical="8dp"
+                android:text="미움받을 용기"
+                android:textColor="@color/black"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                tools:ignore="HardcodedText" />
 
-        <TextView
-            android:id="@+id/textIsbn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="@dimen/margin_top_property"
-            android:background="@drawable/rounded_corner"
-            android:elevation="5dp"
-            android:paddingHorizontal="10dp"
-            android:paddingVertical="5dp"
-            android:text="9375738239204"
-            android:textSize="15sp"
-            tools:ignore="HardcodedText" />
+            <TextView
+                android:id="@+id/textAuthor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="@dimen/margin_top_property"
+                android:background="@drawable/rounded_corner"
+                android:elevation="5dp"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="5dp"
+                android:text="김민주"
+                android:textSize="@dimen/book_info_text_size"
+                tools:ignore="HardcodedText" />
 
-        <TextView
-            android:id="@+id/textContent"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="@dimen/margin_top_property"
-            android:background="@drawable/rounded_corner"
-            android:elevation="5dp"
-            android:paddingHorizontal="10dp"
-            android:paddingVertical="5dp"
-            android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-            android:textSize="15sp"
-            tools:ignore="HardcodedText" />
-    </LinearLayout>
+            <TextView
+                android:id="@+id/textPublisher"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="@dimen/margin_top_property"
+                android:background="@drawable/rounded_corner"
+                android:elevation="5dp"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="5dp"
+                android:text="O'Reilly"
+                android:textSize="@dimen/book_info_text_size"
+                tools:ignore="HardcodedText" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatingActionButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:contentDescription="@string/start_scanning"
-        android:focusable="true"
-        android:src="@drawable/radar"
-        app:backgroundTint="#6D6D6D"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.954"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.976" />
+            <TextView
+                android:id="@+id/textIsbn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="@dimen/margin_top_property"
+                android:background="@drawable/rounded_corner"
+                android:elevation="5dp"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="5dp"
+                android:text="9375738239204"
+                android:textSize="@dimen/book_info_text_size"
+                tools:ignore="HardcodedText" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:id="@+id/textContent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="@dimen/margin_top_property"
+                android:background="@drawable/rounded_corner"
+                android:elevation="5dp"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="5dp"
+                android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+                android:textSize="@dimen/book_info_text_size"
+                tools:ignore="HardcodedText" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/floatingActionButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:contentDescription="@string/start_scanning"
+                    android:focusable="true"
+                    android:src="@drawable/radar"
+                    app:backgroundTint="#6D6D6D"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_margin="20dp"
+                    app:layout_constraintHorizontal_bias="0.954"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.976" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
