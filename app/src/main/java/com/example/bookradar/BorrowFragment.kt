@@ -142,6 +142,10 @@ class MemoAdapter(
                 Glide.with(fragment)
                     .load(item["image"])
                     .into(imageViewBookCover)
+            } else {
+                Glide.with(fragment)
+                    .load(R.drawable.no_image)
+                    .into(imageViewBookCover)
             }
             val borrowDate = item["borrow"]?.let {
                 LocalDate.parse(
