@@ -41,34 +41,6 @@ internal interface DBContract {
                 COL_IMAGE + " TEXT NOT NULL" + ")"
         const val SQL_DROP_TABLE = "DROP TABLE IF EXISTS $TABLE_NAME"
         const val SQL_LOAD = "SELECT * FROM $TABLE_NAME"
-
-        fun insertMemo(context: Context, id: Int, memo: Memo) {
-            val db = DBHelper(context).writableDatabase
-            val value = ContentValues().apply {
-                put("id", id)
-                put("title", memo.title)
-                put("library", memo.library)
-                put("borrow", memo.borrow)
-                put("due", memo.due)
-                put("image", memo.image)
-            }
-            db.insert(TABLE_NAME, null, value)
-        }
-
-        fun updateMemo(context: Context, id: Int, memo: Memo) {
-            val db = DBHelper(context).writableDatabase
-            val value = ContentValues().apply {
-                put("title", memo.title)
-                put("library", memo.library)
-                put("borrow", memo.borrow)
-                put("due", memo.due)
-                put("image", memo.image)
-            }
-            db.update(
-                TABLE_NAME, value,
-                "id=$id", null
-            )
-        }
     }
 }
 
@@ -91,9 +63,38 @@ internal class DBHelper(context: Context?) :
         onCreate(db)
     }
 
+    fun insertMemo(context: Context, id: Int, memo: Memo) {
+        val db = DBHelper(context).writableDatabase
+        val value = ContentValues().apply {
+            put("id", id)
+            put("title", memo.title)
+            put("library", memo.library)
+            put("borrow", memo.borrow)
+            put("due", memo.due)
+            put("image", memo.image)
+        }
+        db.insert(DBContract.TABLE_NAME, null, value)
+    }
+
+    fun updateMemo(context: Context, id: Int, memo: Memo) {
+        val db = DBHelper(context).writableDatabase
+        val value = ContentValues().apply {
+            put("title", memo.title)
+            put("library", memo.library)
+            put("borrow", memo.borrow)
+            put("due", memo.due)
+            put("image", memo.image)
+        }
+        db.update(
+            DBContract.TABLE_NAME, value,
+            "id=$id", null
+        )
+    }
+
     companion object {
         const val DB_FILE = "memo_t4.db"
         const val DB_VERSION = 1
+
     }
 }
 
@@ -130,7 +131,7 @@ class MemoAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = datas[position]
         (holder as MemoViewHolder).itemPos = position
-        holder.itemId = item["id"]!!.toInt()
+        holder.itemId = item["id"]?.toInt() ?: 0
         val binding = holder.binding
         val funcDuration = BorrowFragment()
         binding.run {
@@ -138,7 +139,7 @@ class MemoAdapter(
             textLibraryValue.text = item["library"]
             textBorrow.text = item["borrow"]
             textDue.text = item["due"]
-            if (item["image"] != null && item["image"]!!.isNotBlank()) {
+            if (item["image"]?.isNotBlank() == true) {
                 Glide.with(fragment)
                     .load(item["image"])
                     .into(imageViewBookCover)
@@ -147,18 +148,18 @@ class MemoAdapter(
                     .load(R.drawable.no_image)
                     .into(imageViewBookCover)
             }
-            val borrowDate = item["borrow"]?.let {
+            val borrowDate: LocalDate = item["borrow"]?.let {
                 LocalDate.parse(
                     it,
                     DateTimeFormatter.ISO_LOCAL_DATE
                 )
-            }!!
-            val dueDate = item["due"]?.let {
+            } ?: LocalDate.now()
+            val dueDate: LocalDate = item["due"]?.let {
                 LocalDate.parse(
                     it,
                     DateTimeFormatter.ISO_LOCAL_DATE
                 )
-            }!!
+            } ?: LocalDate.now()
             val duration = funcDuration.calculateDuration(borrowDate, dueDate)
 
             textDurationValue.text = duration.toString()
@@ -171,7 +172,7 @@ class MemoAdapter(
 
     fun delItem(itemPos: Int) {
         if (itemPos != -1) {
-            fragment.delMemo(datas[itemPos]["id"]!!.toInt())
+            datas[itemPos]["id"]?.toInt()?.let { fragment.delMemo(it) }
             datas.removeAt(itemPos)
             notifyDataSetChanged()
         }
@@ -179,12 +180,13 @@ class MemoAdapter(
 
     fun editItem(itemPos: Int) {
         if (itemPos != -1) {
+            val item = datas[itemPos]
             val memo = Memo(
-                datas[itemPos]["title"]!!,
-                datas[itemPos]["library"]!!,
-                datas[itemPos]["borrow"]!!,
-                datas[itemPos]["due"]!!,
-                datas[itemPos]["image"]!!
+                item["title"] ?: "",
+                item["library"] ?: "",
+                item["borrow"] ?: "",
+                item["due"] ?: "",
+                item["image"] ?: ""
             )
             fragment.showManualEntry({ m ->
                 fragment.editMemo(itemPos, m)
@@ -195,93 +197,11 @@ class MemoAdapter(
 
 @Suppress("DEPRECATION")
 class BorrowFragment : Fragment() {
-    lateinit var binding: FragmentBorrowBinding
-    private var adapter: MemoAdapter? = null
-    private var itemID: Int = 0
-    private var dbHelper: DBHelper? = null
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        binding = FragmentBorrowBinding.inflate(inflater, container, false)
-
-        val bInfo = arguments?.getParcelable<BookInfo>("item")
-        if (bInfo != null) {
-            val memo = Memo(
-                bInfo.book!!.title!!,
-                bInfo.library!!.getName(requireContext()),
-                LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE).toString(),
-                LocalDate.now().plusDays(7).format(DateTimeFormatter.ISO_LOCAL_DATE).toString(),
-                bInfo.book!!.thumbnail!!
-            )
-            showManualEntry({ m ->
-                addMemo(m)
-            }, memo)
-        }
-
-
-        val dataList = mutableListOf<MutableMap<String, String>>()
-
-        dbHelper = DBHelper(activity)
-        val db = dbHelper?.readableDatabase
-        val cursor = db?.rawQuery(DBContract.SQL_LOAD, null, null)
-        while (cursor?.moveToNext()!!) {
-            val item = mutableMapOf<String, String>()
-            item["id"] = cursor.getInt(0).toString()
-            item["title"] = cursor.getString(1)!!
-            item["library"] = cursor.getString(2)!!
-            item["borrow"] = cursor.getString(3)!!
-            item["due"] = cursor.getString(4)!!
-            item["image"] = cursor.getString(5)!!
-            dataList.add(item)
-            itemID = cursor.getInt(0)
-        }
-        cursor.close()
-
-        adapter = MemoAdapter(this, dataList)
-        binding.borrowingBookList.adapter = adapter
-
-        binding.fab.setOnClickListener {
-            showManualEntry({ memo ->
-                addMemo(memo)
-            })
-        }
-
-        return binding.root
-    }
-
-    /**
-     * Calculate duration between two dates in days
-     * @param fromTime start date
-     * @param toTime end date
-     * @return duration between two dates in days
-     */
-    fun calculateDuration(fromTime: LocalDate, toTime: LocalDate): Long {
-        fromTime.until(toTime, java.time.temporal.ChronoUnit.DAYS)
-        return fromTime.until(toTime, java.time.temporal.ChronoUnit.DAYS)
-    }
-
-    private fun addMemo(memo: Memo) {
-        val item = mutableMapOf<String, String>()
-        itemID++
-        item["id"] = itemID.toString()
-        item["title"] = memo.title
-        item["library"] = memo.library
-        item["borrow"] = memo.borrow
-        item["due"] = memo.due
-        item["image"] = memo.image
-        adapter!!.datas.add(item)
-        adapter!!.notifyItemChanged(itemID)
-
-        DBContract.insertMemo(requireContext(), itemID, memo)
-    }
-
-    private fun calendarClickListener(
-        eBinding: EditLayoutBinding,
-        targetView: EditText
-    ): View.OnClickListener {
-        return View.OnClickListener {
+    inner class CalendarClickListener(
+        private val eBinding: EditLayoutBinding,
+        private val targetView: EditText
+    ) : View.OnClickListener {
+        override fun onClick(v: View?) {
             var defaultDate = LocalDate.now()
             if (targetView.text.isNotBlank()) {
                 defaultDate = LocalDate.parse(
@@ -362,8 +282,90 @@ class BorrowFragment : Fragment() {
                     }
                 }, defaultDate.year, defaultDate.monthValue - 1, defaultDate.dayOfMonth
             ).show()
-
         }
+
+    }
+
+    lateinit var binding: FragmentBorrowBinding
+    private var adapter: MemoAdapter? = null
+    private var itemID: Int = 0
+    private var dbHelper: DBHelper? = null
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentBorrowBinding.inflate(inflater, container, false)
+
+        val bInfo = arguments?.getParcelable<BookInfo>("item")
+        if (bInfo != null) {
+            val memo = Memo(
+                bInfo.book!!.title!!,
+                bInfo.library!!.getName(requireContext()),
+                LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE).toString(),
+                LocalDate.now().plusDays(7).format(DateTimeFormatter.ISO_LOCAL_DATE).toString(),
+                bInfo.book!!.thumbnail!!
+            )
+            showManualEntry({ m ->
+                addMemo(m)
+            }, memo)
+        }
+
+
+        val dataList = mutableListOf<MutableMap<String, String>>()
+
+        dbHelper = DBHelper(activity)
+        val db = dbHelper?.readableDatabase
+        val cursor = db?.rawQuery(DBContract.SQL_LOAD, null, null)
+        while (cursor?.moveToNext()!!) {
+            val item = mutableMapOf<String, String>()
+            item["id"] = cursor.getInt(0).toString()
+            item["title"] = cursor.getString(1)!!
+            item["library"] = cursor.getString(2)!!
+            item["borrow"] = cursor.getString(3)!!
+            item["due"] = cursor.getString(4)!!
+            item["image"] = cursor.getString(5)!!
+            dataList.add(item)
+            itemID = cursor.getInt(0)
+        }
+        cursor.close()
+
+        adapter = MemoAdapter(this, dataList)
+        binding.borrowingBookList.adapter = adapter
+
+        binding.fab.setOnClickListener {
+            showManualEntry({ memo ->
+                addMemo(memo)
+            })
+        }
+
+        return binding.root
+    }
+
+    /**
+     * Calculate duration between two dates in days
+     * @param fromTime start date
+     * @param toTime end date
+     * @return duration between two dates in days
+     */
+    fun calculateDuration(fromTime: LocalDate, toTime: LocalDate): Long {
+        fromTime.until(toTime, java.time.temporal.ChronoUnit.DAYS)
+        return fromTime.until(toTime, java.time.temporal.ChronoUnit.DAYS)
+    }
+
+    private fun addMemo(memo: Memo) {
+        val item = mutableMapOf<String, String>()
+        itemID++
+        item["id"] = itemID.toString()
+        item["title"] = memo.title
+        item["library"] = memo.library
+        item["borrow"] = memo.borrow
+        item["due"] = memo.due
+        item["image"] = memo.image
+        adapter!!.datas.add(item)
+        adapter!!.notifyItemChanged(itemID)
+
+        dbHelper?.insertMemo(requireContext(), itemID, memo)
     }
 
     /**
@@ -389,13 +391,13 @@ class BorrowFragment : Fragment() {
                 }
             }
             imageButtonCalendarBorrowDate.setOnClickListener(
-                calendarClickListener(
+                CalendarClickListener(
                     this,
                     editBorrowDate
                 )
             )
             imageButtonCalendarDueDate.setOnClickListener(
-                calendarClickListener(
+                CalendarClickListener(
                     this,
                     editTextDueDate
                 )
@@ -451,6 +453,6 @@ class BorrowFragment : Fragment() {
         adapter!!.datas[pos]["due"] = memo.due
         adapter!!.notifyItemChanged(pos)
 
-        DBContract.updateMemo(requireContext(), pos, memo)
+        dbHelper?.updateMemo(requireContext(), pos, memo)
     }
 }
