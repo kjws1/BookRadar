@@ -43,17 +43,21 @@ class DongyangLibrary(
     private val baseUrl: String = "https://lib.dongyang.ac.kr",
     private val searchUrl: String = "/search/tot/result?st=FRNT&commandType=advanced&mId=&si=6&q=",
     override val openingHour: OpeningHour = OpeningHour(LocalTime.of(8, 0), LocalTime.of(22, 0)),
+    // Stores the name of the library as a resource id so that it can be localized
     override val nameResId: Int = R.string.dongyang_library,
     override val location: LatLng = LatLng(37.500062, 126.868063),
     override val books: MutableList<BookInfo> = mutableListOf()
 ) : Library() {
     override fun getName(context: Context): String {
+        // The name changes depending on the language of the device
         return context.getString(nameResId)
     }
 
     override suspend fun search(isbns: List<String>): BookInfo? {
         val book = BookModel()
         val bInfo = BookInfo(this, book)
+
+        // Extract only ISBN-13's since the library only accepts ISBN-13's
         val listIsbn13 = isbns.filter { it.length == 13 }
         if (listIsbn13.isEmpty()) {
             return null

@@ -33,6 +33,7 @@ class BookInfoFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        // Update text views with received book info
         val item = arguments?.getParcelable<BookModel>("item")
         binding.textBookTitle.text = item?.title
         binding.textAuthor.text =
@@ -40,13 +41,15 @@ class BookInfoFragment : Fragment() {
         binding.textPublisher.text = item?.publisher
         binding.textIsbn.text = item?.isbn
         binding.textContent.text = item?.contents
-        // implementation for fetching book info
         binding.floatingActionButton.setOnClickListener {
+            // Store the job in a variable so we can cancel it when the user clicks the cancel button
             var jobSearchBook: Job? = null
             val loadingDialog = AlertDialog.Builder(activity).run {
                 setView(R.layout.loading_dialog)
                 setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
-                    jobSearchBook?.cancel()
+                    // Cancel the job
+                    if (jobSearchBook?.isActive == true)
+                        jobSearchBook?.cancel()
                     dialog.dismiss()
                     Toast.makeText(context, getString(R.string.search_canceled), Toast.LENGTH_SHORT)
                         .show()
@@ -56,21 +59,26 @@ class BookInfoFragment : Fragment() {
             }
             loadingDialog.show()
 
+            // Start scraping websites
             val crawler = Crawler()
             val isbns = binding.textIsbn.text.split(' ')
             var bInfos: ArrayList<BookInfo>?
             jobSearchBook = lifecycleScope.launch {
+                // Suspend functions must be called from a coroutine or another suspend function
                 withContext(Dispatchers.IO) {
                     bInfos = crawler.getBookInfos(isbns)?.let { it1 -> ArrayList(it1) }
                     bInfos?.forEach {
                         it.book = item
                     }
                 }
+                // Navigate to the map fragment if there is any book found
                 if (bInfos != null) {
                     val action =
                         BookInfoFragmentDirections.actionNavBookInfoToNavMaps(bInfos!!.toTypedArray())
                     findNavController().navigate(action)
-                } else {
+                }
+                // Show a toast if there is no book found
+                else {
                     Toast.makeText(context, getString(R.string.no_book_found), Toast.LENGTH_SHORT)
                         .show()
                     Log.d("BookInfoFragment", "No book found")
@@ -78,10 +86,12 @@ class BookInfoFragment : Fragment() {
                 loadingDialog.dismiss()
             }
         }
+        // Blurred book cover
         Glide.with(this)
             .load(item?.thumbnail)
             .apply(bitmapTransform(BlurTransformation(25, 3)))
             .into(binding.imageBookCoverBlur)
+        // Regular book cover
         Glide.with(this)
             .load(item?.thumbnail)
             .into(binding.imageBookCover)

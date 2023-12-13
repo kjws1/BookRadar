@@ -56,8 +56,8 @@ class HomeFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
 
-        searchBar.clearFocus()
         var job: Job? = null
+        searchBar.clearFocus()
         searchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
                 val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
